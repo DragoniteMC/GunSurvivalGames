@@ -1,0 +1,5 @@
+PRE-START: "&b遊戲即將開始"
+PEACE: "&e和平時間"
+STARTING: "&a遊戲中" #peace, first, second
+PRE-DEATHMATCH: "&e最後決戰即將開始"
+DEATHMATCH: "&e最後決戰中" #predeathmatch, deathmatch
