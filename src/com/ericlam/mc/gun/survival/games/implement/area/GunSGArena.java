@@ -1,14 +1,13 @@
 package com.ericlam.mc.gun.survival.games.implement.area;
 
 import com.ericlam.mc.minigames.core.arena.CreateArena;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GunSGArena implements CreateArena {
 
@@ -71,7 +70,9 @@ public class GunSGArena implements CreateArena {
 
     @Override
     public boolean isSetupCompleted() {
-        return false;
+        boolean game = Optional.ofNullable(warpMap.get("game")).map(w->w.size() == 24).orElse(false);
+        boolean dm = Optional.ofNullable(warpMap.get("deathmatch")).map(w->w.size() >= 4).orElse(false);
+        return game && dm;
     }
 
     @Override
@@ -106,8 +107,17 @@ public class GunSGArena implements CreateArena {
 
     @Override
     public String[] getInfo() {
-        return new String[]{
-
+        String[] info =  new String[]{
+                "§e場地名稱: §7".concat(arenaName),
+                "§e顯示名稱: §7".concat(displayName),
+                "§e場地作者: §7".concat(author),
+                "§e世界: §7".concat(world.getName()),
+                "§e坐標: §7".concat(warpMap.keySet().stream().map(w->w.concat("("+warpMap.get(w).size()+")")).collect(Collectors.joining(", "))),
+                "§e描述: §7"
         };
+
+        String[] desp = description.stream().map(s->" ".repeat(5).concat(s)).toArray(String[]::new);
+
+        return (String[])ArrayUtils.addAll(info, desp);
     }
 }

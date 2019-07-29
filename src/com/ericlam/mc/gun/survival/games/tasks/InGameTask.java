@@ -45,7 +45,7 @@ public class InGameTask extends GunSGTask {
 
         if (l == l - half){
             Bukkit.broadcastMessage(configManager.getMessage("chest-refill"));
-            GunSG.chest().refillChests();
+            GunSG.getPlugin(GunSG.class).getChestsManager().refillChests();
         }
 
         if ((DMEnabled && playerManager.getGamePlayer().size() <= dmLocationSize || playerManager.getGamePlayer().size() == 2) && l > 30){

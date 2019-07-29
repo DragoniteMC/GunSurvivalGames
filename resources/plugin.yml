@@ -1,0 +1,10 @@
+name: GunSurvivalGames
+main: com.ericlam.mc.gun.survival.games.main.GunSG
+version: 0.0.1-SNAPSHOT
+author: Hydranapse_
+depend: [Minigames-Core, Vault, CrackShotPlus]
+softdepend: [CustomCSWeapon, CorpseReborn]
+api-version: "1.13"
+commands:
+  gsg-arena:
+    description: gsg arena command
