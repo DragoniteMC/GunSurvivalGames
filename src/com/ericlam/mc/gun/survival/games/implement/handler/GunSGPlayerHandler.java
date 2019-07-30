@@ -19,6 +19,7 @@ public class GunSGPlayerHandler implements GamePlayerHandler {
         Optional.ofNullable(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).ifPresent(attr-> player.setHealth(attr.getBaseValue()));
         player.getActivePotionEffects().forEach(effect->player.removePotionEffect(effect.getType()));
         player.setLevel(0);
+        player.setFireTicks(0);
         player.setGlowing(false);
     }
 

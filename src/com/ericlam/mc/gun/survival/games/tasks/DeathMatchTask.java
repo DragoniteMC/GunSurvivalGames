@@ -19,7 +19,7 @@ public class DeathMatchTask extends GunSGTask {
 
     @Override
     public void onFinish() {
-        MinigamesCore.getApi().getGameManager().endGame(playerManager.getGamePlayer(), null, false);
+        MinigamesCore.getApi().getGameManager().endGame(playerManager.getGamePlayer(), null, true);
     }
 
     @Override
