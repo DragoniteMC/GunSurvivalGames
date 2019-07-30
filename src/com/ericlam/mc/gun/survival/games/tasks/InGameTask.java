@@ -5,7 +5,6 @@ import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 
 public class InGameTask extends GunSGTask {
 
@@ -30,25 +29,25 @@ public class InGameTask extends GunSGTask {
     }
 
     @Override
-    public void run(long l) {
+    public long run(long l) {
         if (l % 60 == 0){
             String time = MinigamesCore.getApi().getGameUtils().getTimeWithUnit(l);
             Bukkit.getOnlinePlayers().forEach(GunSG::playCountSound);
             Bukkit.broadcastMessage(configManager.getMessage("game-count").replace("<time>", time));
         }
         final long half = this.getTotalTime() / 2;
-        if (l - half == 30 || l - half == 20 || l - half == 10 || l - half < 6){
-            String time = MinigamesCore.getApi().getGameUtils().getTimeWithUnit(l);
+        if ((l - half == 30 || l - half == 20 || l - half == 10 || l - half < 6) && l > half) {
+            String time = MinigamesCore.getApi().getGameUtils().getTimeWithUnit(l - half);
             Bukkit.getOnlinePlayers().forEach(GunSG::playCountSound);
             Bukkit.broadcastMessage(configManager.getMessage("chest-refill-count").replace("<time>", time));
         }
 
-        if (l == l - half){
+        if (l == half) {
             Bukkit.broadcastMessage(configManager.getMessage("chest-refill"));
             GunSG.getPlugin(GunSG.class).getChestsManager().refillChests();
         }
 
-        if ((DMEnabled && playerManager.getGamePlayer().size() <= dmLocationSize || playerManager.getGamePlayer().size() == 2) && l > 30){
+        if (((DMEnabled && playerManager.getGamePlayer().size() <= dmLocationSize)) && l > 30) {
             l = 30;
         }
 
@@ -60,6 +59,7 @@ public class InGameTask extends GunSGTask {
 
         int level = (int)l;
         Bukkit.getOnlinePlayers().forEach(p->p.setLevel(level));
+        return l;
     }
 
     @Override

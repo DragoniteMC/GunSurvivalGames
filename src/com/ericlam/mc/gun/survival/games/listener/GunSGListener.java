@@ -2,13 +2,13 @@ package com.ericlam.mc.gun.survival.games.listener;
 
 import com.ericlam.mc.gun.survival.games.main.GunSG;
 import com.ericlam.mc.minigames.core.character.GamePlayer;
-import com.ericlam.mc.minigames.core.event.player.CrackShotDeathEvent;
 import com.ericlam.mc.minigames.core.event.player.GamePlayerDeathEvent;
 import com.ericlam.mc.minigames.core.event.player.GamePlayerQuitEvent;
 import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
 import com.hypernite.mc.hnmc.core.managers.ConfigManager;
+import com.shampaggon.crackshot.CSDirector;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -33,10 +33,11 @@ public class GunSGListener implements Listener {
         Player player = gamePlayer.getPlayer();
         MinigamesCore.getApi().getGameStatsManager().addDeaths(gamePlayer, 1);
         Bukkit.broadcastMessage(GunSG.config().getMessage("quit-in-game").replace("<player>", player.getDisplayName()));
-        handleDeath(player);
+        handleDeath(gamePlayer);
     }
 
-    private void handleDeath(Player player){
+    private void handleDeath(GamePlayer gamePlayer) {
+        Player player = gamePlayer.getPlayer();
         PlayerInventory inventory = player.getInventory();
         if (GunSG.corpseEnabled) {
             CorpseAPI.spawnCorpse(player, player.getLocation(), inventory.getContents(), inventory.getHelmet(), inventory.getChestplate(), inventory.getLeggings(), inventory.getBoots(), inventory.getItemInMainHand());
@@ -53,15 +54,16 @@ public class GunSGListener implements Listener {
         Location playerLoc = player.getLocation();
         player.getWorld().strikeLightningEffect(playerLoc);
         player.getWorld().playSound(playerLoc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 50, 1);
+        MinigamesCore.getApi().getPlayerManager().setSpectator(gamePlayer);
         if (player.isOnGround()) player.sendTitle(GunSG.config().getPureMessage("die-title"), "", 20, 60, 20);
     }
 
     @EventHandler
-    public void onSpectatorChat(AsyncPlayerChatEvent e){
+    public void onSpectatorChat(AsyncPlayerChatEvent e) {
         PlayerManager playerManager = MinigamesCore.getApi().getPlayerManager();
-        playerManager.findPlayer(e.getPlayer()).ifPresent(g->{
+        playerManager.findPlayer(e.getPlayer()).ifPresent(g -> {
             if (g.getStatus() != GamePlayer.Status.SPECTATING) return;
-            e.getRecipients().removeIf(p-> playerManager.findPlayer(p).map(gx->gx.getStatus() == GamePlayer.Status.GAMING).orElse(false));
+            e.getRecipients().removeIf(p -> playerManager.findPlayer(p).map(gx -> gx.getStatus() == GamePlayer.Status.GAMING).orElse(false));
             e.setFormat("§9觀戰§8//§r" + e.getFormat());
         });
     }
@@ -71,7 +73,7 @@ public class GunSGListener implements Listener {
         GamePlayer gamePlayer = e.getGamePlayer();
         if (gamePlayer.getStatus() != GamePlayer.Status.GAMING) return;
         Player player = gamePlayer.getPlayer();
-        handleDeath(player);
+        handleDeath(gamePlayer);
         ConfigManager cf = GunSG.config();
         if (e.getKiller() == null) {
             Bukkit.broadcastMessage(cf.getMessage("death-msg.normal").replace("<victim>", player.getDisplayName()).replace("<action>", e.getAction()));
@@ -86,21 +88,30 @@ public class GunSGListener implements Listener {
         } else {
             itemName = item.getItemMeta().getDisplayName();
         }
+        Player killer = e.getKiller().getPlayer();
         if (e.getDeathCause() == GamePlayerDeathEvent.DeathCause.BUKKIT_DEATH) {
             Bukkit.broadcastMessage(cf.getMessage("death-msg.unknown-kill-player")
                     .replace("<attacker>", e.getKiller().getPlayer().getDisplayName())
                     .replace("<victim>", player.getDisplayName()));
-        } else if (e instanceof CrackShotDeathEvent) {
+        }
+        /*else if (e instanceof CrackShotDeathEvent) {
             CrackShotDeathEvent cs = (CrackShotDeathEvent) e;
+            Entity entity = cs.getBullet();
+            CSDirector csDirector = CSDirector.getPlugin(CSDirector.class);
+            int ammo = csDirector.getAmmoBetweenBrackets(killer, cs.getWeaponTitle(), killer.getInventory().getItemInMainHand());
+            boolean melee = ammo == 125622 && entity == null;
             Bukkit.broadcastMessage(cf.getMessage("death-msg.kill-player")
-                    .replace("<attacker>", e.getKiller().getPlayer().getDisplayName())
-                    .replace("<item>", cs.getWeaponTitle())
+                    .replace("<attacker>", killer.getDisplayName())
+                    .replace("<item>", melee ? itemName : cs.getWeaponTitle())
                     .replace("<victim>", player.getDisplayName())
                     .replace("<action>", e.getAction()));
-        } else {
+
+        } */
+        else {
+            CSDirector csDirector = CSDirector.getPlugin(CSDirector.class);
             Bukkit.broadcastMessage(cf.getMessage("death-msg.kill-player")
-                    .replace("<attacker>", e.getKiller().getPlayer().getDisplayName())
-                    .replace("<item>", itemName)
+                    .replace("<attacker>", killer.getDisplayName())
+                    .replace("<item>", csDirector.getPureName(itemName))
                     .replace("<victim>", player.getDisplayName())
                     .replace("<action>", e.getAction()));
         }
@@ -109,7 +120,8 @@ public class GunSGListener implements Listener {
     @EventHandler
     public void freezePlayer(PlayerMoveEvent e) {
         if (MinigamesCore.getApi().getGameManager().getGameState() != GameState.PRESTART) return;
-        if (MinigamesCore.getApi().getGameManager().getInGameState() == GunSG.getPlugin(GunSG.class).getPeaceState()) return;
+        if (MinigamesCore.getApi().getGameManager().getInGameState() == GunSG.getPlugin(GunSG.class).getPeaceState())
+            return;
         Player player = e.getPlayer();
         MinigamesCore.getApi().getPlayerManager().findPlayer(player).ifPresent(g -> {
             if (g.getStatus() != GamePlayer.Status.GAMING) return;

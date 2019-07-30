@@ -60,10 +60,11 @@ public class PreEndTask extends GunSGTask {
     }
 
     @Override
-    public void run(long l) {
-        if(l % 10 == 0){
+    public long run(long l) {
+        if (l % 3 == 0) {
             if (survivor != null) fireWorkManager.spawnFireWork(survivor);
         }
+        return l;
     }
 
     @Override

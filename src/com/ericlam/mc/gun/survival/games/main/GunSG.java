@@ -39,12 +39,12 @@ public class GunSG extends JavaPlugin implements Listener {
     }
 
     public static void playActiveSound(Player player){
-        String[] sounds = configManager.getData("activeSound", String.class).orElse("BLOCK_NOTE_BLOCK_PLING:1:1").split(":");
+        String[] sounds = configManager.getData("activeSound", String[].class).orElse("BLOCK_NOTE_BLOCK_PLING:1:1".split(":"));
         MinigamesCore.getApi().getGameUtils().playSound(player, sounds);
     }
 
     public static void playCountSound(Player player){
-        String[] sounds = configManager.getData("countdownSound", String.class).orElse("BLOCK_NOTE_BLOCK_SNARE:1:1").split(":");
+        String[] sounds = configManager.getData("countdownSound", String[].class).orElse("BLOCK_NOTE_BLOCK_SNARE:1:1".split(":"));
         MinigamesCore.getApi().getGameUtils().playSound(player, sounds);
     }
 

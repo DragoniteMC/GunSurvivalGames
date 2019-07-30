@@ -1,8 +1,6 @@
 prefix: "&6槍戰飢餓遊戲// &7"
 countdown-start: "&7人數充足，倒數即將開始。"
 countdown-cancel: "&c人數不足，已取消倒數。"
-player-join: "&a<player> &7已加入。"
-need-players: "距離開始還需要 &b<remain> &7位玩家。"
 lobby-boost: "&e人數超出預期，倒數加速三十秒。"
 pre-start: "&7距離開始還有 &e<time>"
 pre-start-5: "&7遊戲將在 &a<time> &7後開始。"

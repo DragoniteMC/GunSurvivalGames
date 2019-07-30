@@ -1,12 +1,13 @@
 package com.ericlam.mc.gun.survival.games.tasks;
 
 import com.ericlam.mc.gun.survival.games.main.GunSG;
-import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
 import org.bukkit.Bukkit;
 
 public class CountdownTask extends GunSGTask {
+
+    private boolean cancel = true;
 
     @Override
     public void initRun(PlayerManager playerManager) {
@@ -26,9 +27,10 @@ public class CountdownTask extends GunSGTask {
     }
 
     @Override
-    public void run(long l) {
+    public long run(long l) {
         if (l == 6){
             MinigamesCore.getApi().getLobbyManager().runFinalResult();
+            cancel = false;
         }
         int boost = configManager.getData("boostPlayers", Integer.class).orElse(23);
         long boostTime = configManager.getData("boostTime", Long.class).orElse(30L);
@@ -38,6 +40,7 @@ public class CountdownTask extends GunSGTask {
         }
         int level = (int)l;
         playerManager.getWaitingPlayer().forEach(g->g.getPlayer().setLevel(level));
+        return l;
     }
 
     @Override
@@ -47,6 +50,6 @@ public class CountdownTask extends GunSGTask {
 
     @Override
     public boolean shouldCancel() {
-        return playerManager.getWaitingPlayer().size() < configManager.getData("requiredPlayers", Integer.class).orElse(2);
+        return cancel && playerManager.getWaitingPlayer().size() < configManager.getData("requiredPlayers", Integer.class).orElse(2);
     }
 }

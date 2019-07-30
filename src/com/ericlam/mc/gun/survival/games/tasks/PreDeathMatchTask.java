@@ -5,7 +5,6 @@ import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -38,7 +37,7 @@ public class PreDeathMatchTask extends GunSGTask {
     }
 
     @Override
-    public void run(long l) {
+    public long run(long l) {
         if (l % 10 == 0 || l < 6) {
             String time = MinigamesCore.getApi().getGameUtils().getTimeWithUnit(l);
             Bukkit.getOnlinePlayers().forEach(GunSG::playCountSound);
@@ -46,6 +45,7 @@ public class PreDeathMatchTask extends GunSGTask {
         }
         int level = (int)l;
         Bukkit.getOnlinePlayers().forEach(p->p.setLevel(level));
+        return l;
     }
 
     @Override

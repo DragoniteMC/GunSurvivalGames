@@ -19,11 +19,11 @@ public class DeathMatchTask extends GunSGTask {
 
     @Override
     public void onFinish() {
-        MinigamesCore.getApi().getGameManager().endGame(playerManager.getGamePlayer(), null, true);
+        MinigamesCore.getApi().getGameManager().endGame(playerManager.getGamePlayer(), null, false);
     }
 
     @Override
-    public void run(long l) {
+    public long run(long l) {
         if (l % 60 == 0 || l < 6 || l == 10){
             String time = MinigamesCore.getApi().getGameUtils().getTimeWithUnit(l);
             Bukkit.broadcastMessage(configManager.getMessage("deathmatch-count").replace("<time>", time));
@@ -35,6 +35,7 @@ public class DeathMatchTask extends GunSGTask {
         }
         int level = (int)l;
         Bukkit.getOnlinePlayers().forEach(p->p.setLevel(level));
+        return l;
     }
 
     @Override

@@ -36,7 +36,7 @@ public class PreStartTask extends GunSGTask {
     }
 
     @Override
-    public void run(long l) {
+    public long run(long l) {
         if (l % 10 == 0 || l <= 5){
             String time = MinigamesCore.getApi().getGameUtils().getTimeWithUnit(l);
             String subTitle = configManager.getPureMessage("pre-start-title").replace("<time>", time);
@@ -49,6 +49,7 @@ public class PreStartTask extends GunSGTask {
         }
         int level = (int)l;
         Bukkit.getOnlinePlayers().forEach(p->p.setLevel(level));
+        return l;
     }
 
     @Override

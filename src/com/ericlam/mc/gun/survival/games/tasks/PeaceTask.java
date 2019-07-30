@@ -23,7 +23,7 @@ public class PeaceTask extends GunSGTask {
     }
 
     @Override
-    public void run(long l) {
+    public long run(long l) {
         if (l % 30 == 0 || l < 6){
             String time = MinigamesCore.getApi().getGameUtils().getTimeWithUnit(l);
             Bukkit.getOnlinePlayers().forEach(GunSG::playCountSound);
@@ -31,6 +31,7 @@ public class PeaceTask extends GunSGTask {
         }
         int level = (int)l;
         Bukkit.getOnlinePlayers().forEach(p->p.setLevel(level));
+        return l;
     }
 
     @Override
