@@ -23,6 +23,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.golde.bukkit.corpsereborn.CorpseAPI.CorpseAPI;
 
+import java.util.Locale;
+
 public class GunSGListener implements Listener {
 
     @EventHandler
@@ -84,10 +86,10 @@ public class GunSGListener implements Listener {
         ItemStack item = e.getKiller().getPlayer().getInventory().getItemInMainHand();
         if (item.getType() == Material.AIR) {
             itemName = "拳頭";
-        } else if (item.getItemMeta() == null) {
-            itemName = item.getType().toString().toLowerCase();
-        } else {
+        } else if (item.getItemMeta() != null && !item.getItemMeta().getDisplayName().isBlank()) {
             itemName = item.getItemMeta().getDisplayName();
+        } else {
+            itemName = item.getType().toString().toLowerCase(Locale.TRADITIONAL_CHINESE);
         }
         Player killer = e.getKiller().getPlayer();
         if (e.getDeathCause() == GamePlayerDeathEvent.DeathCause.BUKKIT_DEATH) {
