@@ -5,6 +5,8 @@ import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
 import org.bukkit.Bukkit;
 
+import java.util.List;
+
 public class DeathMatchTask extends GunSGTask {
 
     @Override
@@ -19,7 +21,7 @@ public class DeathMatchTask extends GunSGTask {
 
     @Override
     public void onFinish() {
-        MinigamesCore.getApi().getGameManager().endGame(playerManager.getGamePlayer(), null, true);
+        MinigamesCore.getApi().getGameManager().endGame(List.of(), null, true);
     }
 
     @Override
