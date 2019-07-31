@@ -32,7 +32,7 @@ public class PreEndTask extends GunSGTask {
             MolotovManager.getInstance().resetFires();
             MolotovManager.getInstance().resetLavaBlocks();
         }
-        this.survivor = playerManager.getGamePlayer().size() > 0 ? playerManager.getGamePlayer().get(0).getPlayer() : null;
+        this.survivor = playerManager.getGamePlayer().size() == 1 ? playerManager.getGamePlayer().get(0).getPlayer() : null;
         if (survivor != null) survivor.sendTitle(configManager.getPureMessage("win-title"), "", 20, 100, 20);
         Bukkit.broadcastMessage(configManager.getMessage("game-end").replace("<arena>", arena.getDisplayName()).replace("<player>", (survivor == null ? "無" : survivor.getDisplayName())));
 
