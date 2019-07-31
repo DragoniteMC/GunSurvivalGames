@@ -56,7 +56,6 @@ public class GunSGListener implements Listener {
         Location playerLoc = player.getLocation();
         player.getWorld().strikeLightningEffect(playerLoc);
         player.getWorld().playSound(playerLoc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 50, 1);
-        MinigamesCore.getApi().getInventoryManager().removeGamingPlayer(gamePlayer);
         MinigamesCore.getApi().getPlayerManager().setSpectator(gamePlayer);
         if (player.isOnGround()) player.sendTitle(GunSG.config().getPureMessage("die-title"), "", 20, 60, 20);
     }
