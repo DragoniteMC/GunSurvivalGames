@@ -7,7 +7,6 @@ import com.ericlam.mc.gun.survival.games.implement.handler.GunSGPlayerHandler;
 import com.ericlam.mc.gun.survival.games.implement.handler.GunSGStatsHandler;
 import com.ericlam.mc.gun.survival.games.listener.GunSGListener;
 import com.ericlam.mc.gun.survival.games.manager.ChestsManager;
-import com.ericlam.mc.gun.survival.games.states.*;
 import com.ericlam.mc.gun.survival.games.tasks.*;
 import com.ericlam.mc.minigames.core.arena.Arena;
 import com.ericlam.mc.minigames.core.event.arena.FinalArenaLoadedEvent;
@@ -29,6 +28,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import javax.annotation.Nullable;
 
 public class GunSG extends JavaPlugin implements Listener {
 
@@ -68,7 +69,7 @@ public class GunSG extends JavaPlugin implements Listener {
         configManager = HyperNiteMC.getAPI().registerConfig(config);
         configManager.setMsgConfig("lang.yml");
         chestsManager = new ChestsManager(configManager);
-        peaceState = new PeaceState(configManager);
+        peaceState = new InGameState("peace", getMotd("peace"));
         customEnabled = getServer().getPluginManager().getPlugin("CustomCSWeapon") != null;
         corpseEnabled = getServer().getPluginManager().getPlugin("CorpseReborn") != null;
         this.getServer().getPluginManager().registerEvents(this, this);
@@ -82,16 +83,21 @@ public class GunSG extends JavaPlugin implements Listener {
         compulsory.registerLobbyTask(new CountdownTask());
         compulsory.registerEndTask(new PreEndTask());
         Voluntary voluntary = MinigamesCore.getRegistration().getVoluntary();
-        voluntary.registerGameTask(new PreStartState(configManager), new PreStartTask());
+        voluntary.registerGameTask(new InGameState("preStart", getMotd("preStart")), new PreStartTask());
         voluntary.registerGameTask(peaceState, new PeaceTask());
-        voluntary.registerGameTask(new StartingState(configManager), new InGameTask());
-        voluntary.registerGameTask(new PreDMState(configManager), new PreDeathMatchTask());
-        voluntary.registerGameTask(new DeathmatchState(configManager), new DeathMatchTask());
+        voluntary.registerGameTask(new InGameState("starting", getMotd("starting")), new InGameTask());
+        voluntary.registerGameTask(new InGameState("preDeathmatch", getMotd("preDeathmatch")), new PreDeathMatchTask());
+        voluntary.registerGameTask(new InGameState("deathmatch", getMotd("deathmatch")), new DeathMatchTask());
         compassTracker = MinigamesCore.getProperties().getGameFactory()
                 .getCompassFactory()
                 .setTrackerRange(configManager.getData("compassMaxTrack", Integer.class).orElse(100))
                 .setSearchingText("&b&l搜&r&7索中...", "&7搜&b&l索&r&7中...", "&7搜索&b&l中&r&7...")
                 .setCaughtText("&e玩家:&f <target> &7| &e距離:&f <distance>").build();
+    }
+
+    @Nullable
+    private String getMotd(String var) {
+        return configManager.getData(var, String.class).orElse(null);
     }
 
     @Override
