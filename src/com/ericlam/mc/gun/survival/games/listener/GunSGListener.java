@@ -3,6 +3,7 @@ package com.ericlam.mc.gun.survival.games.listener;
 import com.ericlam.mc.gun.survival.games.main.GunSG;
 import com.ericlam.mc.minigames.core.character.GamePlayer;
 import com.ericlam.mc.minigames.core.event.player.GamePlayerDeathEvent;
+import com.ericlam.mc.minigames.core.event.player.GamePlayerJoinEvent;
 import com.ericlam.mc.minigames.core.event.player.GamePlayerQuitEvent;
 import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
@@ -168,5 +169,10 @@ public class GunSGListener implements Listener {
 
     }
 
+    @EventHandler
+    public void onPlayerJoin(GamePlayerJoinEvent e) {
+        if (e.getGameState() == GameState.VOTING) return;
+        MinigamesCore.getApi().getPlayerManager().setSpectator(e.getGamePlayer());
+    }
 
 }
