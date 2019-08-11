@@ -35,6 +35,9 @@ public class PreEndTask extends GunSGTask {
         if (GunSG.customEnabled) {
             CustomCSWeapon.getApi().getMolotovManager().resetFires();
         }
+        if (playerManager.getGamePlayer().size() > 1) {
+            playerManager.getGamePlayer().forEach(p -> GunSG.getPlugin(GunSG.class).getWantedManager().onBountyFail(p.getPlayer()));
+        }
         this.survivor = playerManager.getGamePlayer().size() == 1 ? playerManager.getGamePlayer().get(0).getPlayer() : null;
         if (survivor != null) {
             if (survivor.isOnline()) survivor.sendTitle(configManager.getPureMessage("win-title"), "", 20, 100, 20);

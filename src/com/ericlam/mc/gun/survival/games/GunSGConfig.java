@@ -8,10 +8,12 @@ import com.hypernite.mc.hnmc.core.utils.converters.LocationSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -118,9 +120,10 @@ public final class GunSGConfig extends ConfigSetter implements ArenaConfig {
     }
 
     @Override
-    public <T> Map<GameRule<T>, T> getWorldGameRule() {
-        return Map.of();
+    public void setExtraWorldSetting(@Nonnull World world) {
+        world.setGameRule(GameRule.DO_FIRE_TICK, false);
     }
+
 
     @Override
     public ImmutableMap<String, Integer> getAllowWarps() {

@@ -32,6 +32,7 @@ public class WantedManager {
     private final Economy economy;
     private ItemStack wantedItem;
     private Inventory inventory;
+    private Map<Player, Inventory> rewardInventory = new HashMap<>();
 
     public WantedManager(Economy economy) {
         this.economy = economy;
@@ -67,6 +68,7 @@ public class WantedManager {
         InventoryBuilder inventoryBuilder = new InventoryBuilder(row == 0 ? 1 : row, "&c懸賞名單");
         for (GamePlayer gamePlayer : gamePlayers) {
             Player player = gamePlayer.getPlayer();
+            this.rewardInventory.putIfAbsent(player, this.createRewardInventory(player));
             ItemStack item = new ItemStackBuilder(Material.PLAYER_HEAD).displayName(ChatColor.YELLOW + player.getDisplayName()).lore("&b點擊設置懸賞數量").head(player.getUniqueId(), player.getName())
                     .onClick(e -> {
                         e.setCancelled(true);
@@ -75,7 +77,7 @@ public class WantedManager {
                             clicker.sendMessage(MinigamesCore.getProperties().getMinigameConfig().getMessage("spectate-not-gamer"));
                             return;
                         }
-                        clicker.openInventory(this.createRewardInventory(player));
+                        clicker.openInventory(this.rewardInventory.get(player));
                     }).build();
             inventoryBuilder.item(item);
             this.itemStackMap.put(gamePlayer, item);
@@ -84,7 +86,10 @@ public class WantedManager {
     }
 
     public void removeGamer(GamePlayer player) {
-        Optional.ofNullable(this.itemStackMap.get(player)).ifPresent(e -> inventory.remove(e));
+        Optional.ofNullable(this.itemStackMap.get(player)).ifPresent(e -> {
+            inventory.remove(e);
+            this.rewardInventory.remove(player.getPlayer());
+        });
     }
 
     private Inventory createRewardInventory(@Nonnull Player player) {
@@ -100,9 +105,9 @@ public class WantedManager {
                             clicker.sendMessage(MinigamesCore.getProperties().getMinigameConfig().getMessage("spectate-not-gamer"));
                             return;
                         }
-                        this.spentList.putIfAbsent(player, new HashMap<>());
-                        this.spentList.get(player).putIfAbsent(player, dou);
-                        this.spentList.get(player).computeIfPresent(player, (p, d) -> d + dou);
+                        this.spentList.putIfAbsent(clicker, new HashMap<>());
+                        this.spentList.get(clicker).computeIfPresent(player, (p, d) -> d + dou);
+                        this.spentList.get(clicker).putIfAbsent(player, dou);
                         double bounty = this.spentList.values().stream().filter(map -> map.containsKey(player)).mapToDouble(map -> map.get(player)).sum();
                         Bukkit.broadcastMessage(GunSG.config().getMessage("bounty-set")
                                 .replace("<player>", clicker.getDisplayName())

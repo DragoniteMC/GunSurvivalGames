@@ -184,6 +184,7 @@ public class GunSGListener implements Listener {
     public void onPlayerJoin(GamePlayerJoinEvent e) {
         if (e.getGameState() == GameState.VOTING) return;
         MinigamesCore.getApi().getPlayerManager().setSpectator(e.getGamePlayer());
+        MinigamesCore.getApi().getLobbyManager().tpLobbySpawn(e.getGamePlayer().getPlayer());
     }
 
 }
