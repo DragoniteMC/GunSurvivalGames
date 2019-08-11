@@ -1,6 +1,7 @@
 package com.ericlam.mc.gun.survival.games.tasks;
 
 import com.ericlam.mc.gun.survival.games.main.GunSG;
+import com.ericlam.mc.minigames.core.factory.scoreboard.GameBoard;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
 import org.bukkit.Bukkit;
@@ -9,9 +10,12 @@ import java.util.List;
 
 public class DeathMatchTask extends GunSGTask {
 
+    private GameBoard gameBoard;
+
     @Override
     public void initRun(PlayerManager playerManager) {
-
+        gameBoard = GunSG.getPlugin(GunSG.class).getGameBoard();
+        gameBoard.setLine("stats", "&7遊戲狀態: " + GunSG.getMotd("deathmatch"));
     }
 
     @Override
@@ -37,7 +41,7 @@ public class DeathMatchTask extends GunSGTask {
         }
         int level = (int)l;
         Bukkit.getOnlinePlayers().forEach(p->p.setLevel(level));
-        return l;
+        return InGameTask.updateTimeShow(l, gameBoard);
     }
 
     @Override

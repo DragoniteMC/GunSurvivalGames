@@ -1,6 +1,8 @@
 package com.ericlam.mc.gun.survival.games.tasks;
 
 import com.ericlam.mc.gun.survival.games.main.GunSG;
+import com.ericlam.mc.minigames.core.arena.Arena;
+import com.ericlam.mc.minigames.core.factory.scoreboard.GameBoard;
 import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
@@ -12,13 +14,19 @@ import java.util.List;
 
 public class PreStartTask extends GunSGTask {
 
+    private GameBoard gameBoard;
+    private Arena arena;
+
     @Override
     public void initRun(PlayerManager playerManager) {
         MinigamesCore.getApi().getGameManager().setState(GameState.PRESTART);
-        List<Location> spawns = MinigamesCore.getApi().getArenaManager().getFinalArena().getWarp("game");
+        arena = MinigamesCore.getApi().getArenaManager().getFinalArena();
+        List<Location> spawns = arena.getWarp("game");
         for (int i = 0; i < Math.min(spawns.size(), playerManager.getGamePlayer().size()); i++) {
             playerManager.getGamePlayer().get(i).getPlayer().teleportAsync(spawns.get(i));
         }
+        gameBoard = GunSG.getPlugin(GunSG.class).getGameBoard();
+        gameBoard.setLine("stats", "&7遊戲狀態: ".concat(GunSG.getMotd("preStart")));
     }
 
     @Override
@@ -47,9 +55,7 @@ public class PreStartTask extends GunSGTask {
             });
             Bukkit.broadcastMessage(configManager.getMessage("pre-start".concat(l <= 5 ? "-5" : "")).replace("<time>", time));
         }
-        int level = (int)l;
-        Bukkit.getOnlinePlayers().forEach(p->p.setLevel(level));
-        return l;
+        return InGameTask.updateTimeShow(l, gameBoard);
     }
 
     @Override

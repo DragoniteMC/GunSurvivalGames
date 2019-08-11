@@ -18,3 +18,19 @@ reward-kills: 20
 reward-wins: 50
 count-down-sound: BLOCK_NOTE_BLOCK_SNARE:1:1
 active-sound: BLOCK_NOTE_BLOCK_PLING:1:1
+
+wanted-item:
+  material: ROSE_BUSH
+  name: "&c懸賞"
+  lore:
+    - "&c點擊打開懸賞選單"
+  money:
+    - 50.0
+    - 100.0
+    - 200.0
+    - 300.0
+    - 400.0
+    - 600.0
+    - 1000.0
+    - 1500.0
+    - 3000.0

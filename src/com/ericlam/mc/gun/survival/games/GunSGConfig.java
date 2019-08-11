@@ -14,6 +14,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -27,6 +28,14 @@ public final class GunSGConfig extends ConfigSetter implements ArenaConfig {
     private int maxLoadedArenas;
     private File configFile;
     private FileConfiguration config;
+    @Extract
+    private String wantedItemMaterial;
+    @Extract
+    private String wantedItemName;
+    @Extract
+    private List<String> wantedItemLore;
+    @Extract
+    private List<Double> wantedDoubleList;
 
     @Extract private int requiredPlayers;
     @Extract private int maxTie1Items;
@@ -83,6 +92,10 @@ public final class GunSGConfig extends ConfigSetter implements ArenaConfig {
         this.compassMaxTrack = config.getInt("compass-max-track");
         this.rewardKills = config.getInt("reward-kills");
         this.rewardWins = config.getInt("reward-wins");
+        this.wantedItemLore = config.getStringList("wanted-item.lore");
+        this.wantedItemName = config.getString("wanted-item.name");
+        this.wantedItemMaterial = config.getString("wanted-item.material");
+        this.wantedDoubleList = config.getDoubleList("wanted-item.money");
         this.countdownSound = Objects.requireNonNull(config.getString("count-down-sound")).split(":");
         this.activeSound = Objects.requireNonNull(config.getString("active-sound")).split(":");
 

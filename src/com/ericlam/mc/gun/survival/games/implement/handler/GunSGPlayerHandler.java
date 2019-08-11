@@ -21,6 +21,9 @@ public class GunSGPlayerHandler implements GamePlayerHandler {
         player.setLevel(0);
         player.setFireTicks(0);
         player.setGlowing(false);
+        if (GunSG.getPlugin(GunSG.class).getGameBoard() != null && status == GamePlayer.Status.SPECTATING) {
+            GunSG.getPlugin(GunSG.class).getGameBoard().addPlayer(gamePlayer);
+        }
     }
 
     @Override

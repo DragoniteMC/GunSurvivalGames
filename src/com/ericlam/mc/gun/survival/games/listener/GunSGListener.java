@@ -2,6 +2,7 @@ package com.ericlam.mc.gun.survival.games.listener;
 
 import com.ericlam.mc.gun.survival.games.main.GunSG;
 import com.ericlam.mc.minigames.core.character.GamePlayer;
+import com.ericlam.mc.minigames.core.event.player.CrackShotDeathEvent;
 import com.ericlam.mc.minigames.core.event.player.GamePlayerDeathEvent;
 import com.ericlam.mc.minigames.core.event.player.GamePlayerJoinEvent;
 import com.ericlam.mc.minigames.core.event.player.GamePlayerQuitEvent;
@@ -12,10 +13,13 @@ import com.hypernite.mc.hnmc.core.managers.ConfigManager;
 import com.shampaggon.crackshot.CSDirector;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -36,6 +40,7 @@ public class GunSGListener implements Listener {
         Player player = gamePlayer.getPlayer();
         MinigamesCore.getApi().getGameStatsManager().addDeaths(gamePlayer, 1);
         Bukkit.broadcastMessage(GunSG.config().getMessage("quit-in-game").replace("<player>", player.getDisplayName()));
+        GunSG.getPlugin(GunSG.class).getWantedManager().onBountyFail(player);
         handleDeath(gamePlayer);
     }
 
@@ -58,6 +63,7 @@ public class GunSGListener implements Listener {
         player.getWorld().strikeLightningEffect(playerLoc);
         player.getWorld().playSound(playerLoc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 50, 1);
         MinigamesCore.getApi().getPlayerManager().setSpectator(gamePlayer);
+        GunSG.getPlugin(GunSG.class).getWantedManager().removeGamer(gamePlayer);
         if (player.isOnGround()) player.sendTitle(GunSG.config().getPureMessage("die-title"), "", 20, 60, 20);
     }
 
@@ -69,6 +75,13 @@ public class GunSGListener implements Listener {
             e.getRecipients().removeIf(p -> playerManager.findPlayer(p).map(gx -> gx.getStatus() == GamePlayer.Status.GAMING).orElse(false));
             e.setFormat("§9觀戰§8//§r" + e.getFormat());
         });
+    }
+
+    @EventHandler
+    public void onDamage(EntityDamageEvent e) {
+        if (GunSG.getPlugin(GunSG.class).isPeaceState(MinigamesCore.getApi().getGameManager().getInGameState())) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -92,38 +105,36 @@ public class GunSGListener implements Listener {
             itemName = item.getType().toString().toLowerCase(Locale.TRADITIONAL_CHINESE);
         }
         Player killer = e.getKiller().getPlayer();
+        CSDirector csDirector = CSDirector.getPlugin(CSDirector.class);
         if (e.getDeathCause() == GamePlayerDeathEvent.DeathCause.BUKKIT_DEATH) {
             Bukkit.broadcastMessage(cf.getMessage("death-msg.unknown-kill-player")
                     .replace("<attacker>", e.getKiller().getPlayer().getDisplayName())
                     .replace("<victim>", player.getDisplayName()));
-        }
-        /*else if (e instanceof CrackShotDeathEvent) {
+        } else if (e instanceof CrackShotDeathEvent) {
             CrackShotDeathEvent cs = (CrackShotDeathEvent) e;
             Entity entity = cs.getBullet();
-            CSDirector csDirector = CSDirector.getPlugin(CSDirector.class);
-            int ammo = csDirector.getAmmoBetweenBrackets(killer, cs.getWeaponTitle(), killer.getInventory().getItemInMainHand());
-            boolean melee = ammo == 125622 && entity == null;
+
+            boolean grenade = entity instanceof TNTPrimed;
             Bukkit.broadcastMessage(cf.getMessage("death-msg.kill-player")
                     .replace("<attacker>", killer.getDisplayName())
-                    .replace("<item>", melee ? itemName : cs.getWeaponTitle())
+                    .replace("<item>", grenade ? cs.getWeaponTitle() : csDirector.getPureName(itemName))
                     .replace("<victim>", player.getDisplayName())
                     .replace("<action>", e.getAction()));
-
-        } */
+        }
         else {
-            CSDirector csDirector = CSDirector.getPlugin(CSDirector.class);
             Bukkit.broadcastMessage(cf.getMessage("death-msg.kill-player")
                     .replace("<attacker>", killer.getDisplayName())
                     .replace("<item>", csDirector.getPureName(itemName))
                     .replace("<victim>", player.getDisplayName())
                     .replace("<action>", e.getAction()));
         }
+        GunSG.getPlugin(GunSG.class).getWantedManager().onBountyKill(killer, player);
     }
 
     @EventHandler
     public void freezePlayer(PlayerMoveEvent e) {
         if (MinigamesCore.getApi().getGameManager().getGameState() != GameState.PRESTART) return;
-        if (MinigamesCore.getApi().getGameManager().getInGameState() == GunSG.getPlugin(GunSG.class).getPeaceState())
+        if (GunSG.getPlugin(GunSG.class).isPeaceState(MinigamesCore.getApi().getGameManager().getInGameState()))
             return;
         Player player = e.getPlayer();
         MinigamesCore.getApi().getPlayerManager().findPlayer(player).ifPresent(g -> {

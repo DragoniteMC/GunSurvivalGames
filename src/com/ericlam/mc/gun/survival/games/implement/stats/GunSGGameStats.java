@@ -1,6 +1,10 @@
 package com.ericlam.mc.gun.survival.games.implement.stats;
 
+import com.ericlam.mc.gun.survival.games.main.GunSG;
 import com.ericlam.mc.minigames.core.gamestats.GameStatsEditor;
+import org.bukkit.ChatColor;
+
+import java.util.Arrays;
 
 public class GunSGGameStats implements GameStatsEditor {
 
@@ -67,6 +71,13 @@ public class GunSGGameStats implements GameStatsEditor {
 
     @Override
     public String[] getInfo() {
-        return new String[0];
+        return Arrays.stream(GunSG.config().getMessageList("gamestats-info", true))
+                .map(l -> ChatColor.translateAlternateColorCodes('&', l
+                        .replace("<kills>", kills + "")
+                        .replace("<deaths>", deaths + "")
+                        .replace("<wins>", wins + "")
+                        .replace("<played>", played + "")
+                        .replace("<score>", getScores() + "")))
+                .toArray(String[]::new);
     }
 }
