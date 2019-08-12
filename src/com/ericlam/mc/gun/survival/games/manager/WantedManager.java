@@ -6,7 +6,9 @@ import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.hypernite.mc.hnmc.core.builders.InventoryBuilder;
 import com.hypernite.mc.hnmc.core.builders.ItemStackBuilder;
+import com.hypernite.mc.hnmc.core.main.HyperNiteMC;
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -103,6 +105,12 @@ public class WantedManager {
                         Player clicker = (Player) e.getWhoClicked();
                         if (!player.isOnline()) {
                             clicker.sendMessage(MinigamesCore.getProperties().getMinigameConfig().getMessage("spectate-not-gamer"));
+                            return;
+                        }
+                        String msg = GunSG.config().getMessage("no-gems");
+                        Economy economy = HyperNiteMC.getAPI().getVaultAPI().getEconomy();
+                        if (economy.withdrawPlayer(clicker, dou).type != EconomyResponse.ResponseType.SUCCESS) {
+                            clicker.sendMessage(msg);
                             return;
                         }
                         this.spentList.putIfAbsent(clicker, new HashMap<>());

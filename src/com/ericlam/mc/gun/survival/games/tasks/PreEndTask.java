@@ -1,6 +1,7 @@
 package com.ericlam.mc.gun.survival.games.tasks;
 
 import com.ericlam.mc.csweapon.CustomCSWeapon;
+import com.ericlam.mc.gun.survival.games.listener.GunSGListener;
 import com.ericlam.mc.gun.survival.games.main.GunSG;
 import com.ericlam.mc.minigames.core.arena.Arena;
 import com.ericlam.mc.minigames.core.factory.scoreboard.GameBoard;
@@ -41,6 +42,8 @@ public class PreEndTask extends GunSGTask {
         this.survivor = playerManager.getGamePlayer().size() == 1 ? playerManager.getGamePlayer().get(0).getPlayer() : null;
         if (survivor != null) {
             if (survivor.isOnline()) survivor.sendTitle(configManager.getPureMessage("win-title"), "", 20, 100, 20);
+            double win = GunSG.config().getData("rewardWins", Double.class).orElse(0.0d);
+            GunSGListener.reward(survivor, win);
             GunSG.getPlugin(GunSG.class).getWantedManager().onBountyWin(survivor);
         }
         Bukkit.broadcastMessage(configManager.getMessage("game-end").replace("<arena>", arena.getDisplayName()).replace("<player>", (survivor == null ? "無" : survivor.getDisplayName())));

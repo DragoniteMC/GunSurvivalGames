@@ -9,8 +9,11 @@ import com.ericlam.mc.minigames.core.event.player.GamePlayerQuitEvent;
 import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
+import com.hypernite.mc.hnmc.core.main.HyperNiteMC;
 import com.hypernite.mc.hnmc.core.managers.ConfigManager;
 import com.shampaggon.crackshot.CSDirector;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -28,6 +31,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.golde.bukkit.corpsereborn.CorpseAPI.CorpseAPI;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Locale;
 
 public class GunSGListener implements Listener {
@@ -84,6 +90,13 @@ public class GunSGListener implements Listener {
         }
     }
 
+    public static void reward(Player player, double money) {
+        Economy economy = HyperNiteMC.getAPI().getVaultAPI().getEconomy();
+        if (economy.depositPlayer(player, money).type == EconomyResponse.ResponseType.SUCCESS && player.isOnline()) {
+            player.sendMessage(GunSG.config().getMessage("money-reward").replace("<money>", new BigDecimal(money).round(new MathContext(2, RoundingMode.HALF_DOWN)).toPlainString()));
+        }
+    }
+
     @EventHandler
     public void onGamePlayerDeath(GamePlayerDeathEvent e) {
         GamePlayer gamePlayer = e.getGamePlayer();
@@ -128,6 +141,8 @@ public class GunSGListener implements Listener {
                     .replace("<victim>", player.getDisplayName())
                     .replace("<action>", e.getAction()));
         }
+        double reward = GunSG.config().getData("rewardKills", Double.class).orElse(0.0d);
+        reward(killer, reward);
         GunSG.getPlugin(GunSG.class).getWantedManager().onBountyKill(killer, player);
     }
 

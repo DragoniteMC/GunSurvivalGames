@@ -53,8 +53,10 @@ public final class GunSGConfig extends ConfigSetter implements ArenaConfig {
     @Extract private long deathMatchTime;
 
     @Extract private int compassMaxTrack;
-    @Extract private int rewardKills;
-    @Extract private int rewardWins;
+    @Extract
+    private double rewardKills;
+    @Extract
+    private double rewardWins;
 
     @Extract private String[] countdownSound;
     @Extract private String[] activeSound;
@@ -92,8 +94,8 @@ public final class GunSGConfig extends ConfigSetter implements ArenaConfig {
         this.preDeathMatchTime = config.getLong("predeathmatch-time");
         this.deathMatchTime = config.getLong("deathmatch-time");
         this.compassMaxTrack = config.getInt("compass-max-track");
-        this.rewardKills = config.getInt("reward-kills");
-        this.rewardWins = config.getInt("reward-wins");
+        this.rewardKills = config.getDouble("reward-kills");
+        this.rewardWins = config.getDouble("reward-wins");
         this.wantedItemLore = config.getStringList("wanted-item.lore");
         this.wantedItemName = config.getString("wanted-item.name");
         this.wantedItemMaterial = config.getString("wanted-item.material");

@@ -27,6 +27,7 @@ bounty-set: "&a<player> &7設置了懸賞價值 &6<money> Gems &7於通緝玩家
 bounty-get: "&a<player>&7 已得到設置於 &c<target>&7 的懸賞&6(<money> Gems)"
 bounty-win: "&a<player> &7獲得了設置在他的懸賞&6(<money> Gems)"
 bounty-fail: "你設置懸賞的那個玩家中途退出, 因此你的金錢已被恢復! &e(&7+&6<money> Gems&e)"
+no-gems: "&c你沒有足夠的 Gems"
 death-msg:
   normal: "&a<victim> &7<action>。"
   unknown-kill-player: "&a<attacker> &7殺死了 &c<victim> &7。"
