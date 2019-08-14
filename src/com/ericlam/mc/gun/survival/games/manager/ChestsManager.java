@@ -54,8 +54,8 @@ public class ChestsManager {
         for (String mater : tieGun) {
             String[] title = mater.split(":");
             ItemStack original_gun = csUtility.generateWeapon(title[0]);
+            if (original_gun == null) continue;
             ItemStack gun = CSPapi.updateItemStackFeaturesNonPlayer(title[0], original_gun);
-            if (gun == null) continue;
             int amount = Integer.parseInt(title[1]);
             gun.setAmount(amount);
             tieItems.add(gun);
