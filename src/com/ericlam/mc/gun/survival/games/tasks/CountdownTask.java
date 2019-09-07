@@ -1,9 +1,13 @@
 package com.ericlam.mc.gun.survival.games.tasks;
 
 import com.ericlam.mc.gun.survival.games.main.GunSG;
+import com.ericlam.mc.minigames.core.arena.Arena;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+
+import java.util.List;
 
 public class CountdownTask extends GunSGTask {
 
@@ -30,6 +34,9 @@ public class CountdownTask extends GunSGTask {
     public long run(long l) {
         if (l == 6){
             MinigamesCore.getApi().getLobbyManager().runFinalResult();
+            Arena arena = MinigamesCore.getApi().getArenaManager().getFinalArena();
+            List<Location> spawns = arena.getWarp("game");
+            MinigamesCore.getApi().getGameUtils().unLagIterate(spawns, location -> location.getChunk().load(true), 5L);
             cancel = false;
         }
         int boost = configManager.getData("boostPlayers", Integer.class).orElse(23);

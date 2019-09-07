@@ -22,9 +22,7 @@ public class PreStartTask extends GunSGTask {
         MinigamesCore.getApi().getGameManager().setState(GameState.PRESTART);
         arena = MinigamesCore.getApi().getArenaManager().getFinalArena();
         List<Location> spawns = arena.getWarp("game");
-        for (int i = 0; i < Math.min(spawns.size(), playerManager.getGamePlayer().size()); i++) {
-            playerManager.getGamePlayer().get(i).getPlayer().teleportAsync(spawns.get(i));
-        }
+        MinigamesCore.getApi().getGameUtils().noLagTeleport(playerManager.getGamePlayer(), spawns, 2L);
         gameBoard = GunSG.getPlugin(GunSG.class).getGameBoard();
         gameBoard.setLine("stats", "&7遊戲狀態: ".concat(GunSG.getMotd("preStart")));
     }

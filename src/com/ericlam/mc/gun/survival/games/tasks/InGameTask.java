@@ -8,6 +8,9 @@ import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+
+import java.util.List;
 
 public class InGameTask extends GunSGTask {
 
@@ -75,8 +78,11 @@ public class InGameTask extends GunSGTask {
         if (l == 30 || l == 15 || l < 6) {
             Bukkit.getOnlinePlayers().forEach(GunSG::playCountSound);
             String time = MinigamesCore.getApi().getGameUtils().getTimeWithUnit(l);
-            ;
             Bukkit.broadcastMessage(configManager.getMessage("pre-deathmatch").replace("<time>", time));
+            if (l == 5) {
+                List<Location> locations = arena.getWarp("deathmatch");
+                MinigamesCore.getApi().getGameUtils().unLagIterate(locations, loc -> loc.getChunk().load(true), 10L);
+            }
         }
 
         return updateTimeShow(l, gameBoard);

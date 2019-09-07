@@ -66,7 +66,7 @@ public class WantedManager {
     }
 
     public void loadWantedInventory(List<GamePlayer> gamePlayers) {
-        int row = (int) Math.ceil(gamePlayers.size() / 9);
+        int row = (int) Math.ceil((double) gamePlayers.size() / 9);
         InventoryBuilder inventoryBuilder = new InventoryBuilder(row == 0 ? 1 : row, "&c懸賞名單");
         for (GamePlayer gamePlayer : gamePlayers) {
             Player player = gamePlayer.getPlayer();

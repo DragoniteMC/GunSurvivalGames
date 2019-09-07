@@ -16,16 +16,13 @@ public class PreDeathMatchTask extends GunSGTask {
 
     @Override
     public void initRun(PlayerManager playerManager) {
-        int gamers = playerManager.getGamePlayer().size();
         List<Location> spawns = MinigamesCore.getApi().getArenaManager().getFinalArena().getWarp("deathmatch");
-        for (int i = 0; i < Math.min(gamers, spawns.size()); i++) {
-            playerManager.getGamePlayer().get(i).getPlayer().teleportAsync(spawns.get(i));
-        }
+        MinigamesCore.getApi().getGameUtils().noLagTeleport(playerManager.getGamePlayer(), spawns, 2L);
         playerManager.getSpectators().forEach(g->{
             Player player = g.getPlayer();
             player.setSpectatorTarget(null);
-            player.teleportAsync(spawns.get(0));
         });
+        MinigamesCore.getApi().getGameUtils().noLagTeleport(playerManager.getSpectators(), 2L, spawns.get(0));
         gameBoard = GunSG.getPlugin(GunSG.class).getGameBoard();
         gameBoard.setLine("stats", "&7遊戲狀態: ".concat(GunSG.getMotd("deathmatch")));
     }
