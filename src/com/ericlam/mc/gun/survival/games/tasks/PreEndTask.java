@@ -10,10 +10,9 @@ import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.ericlam.mc.minigames.core.manager.FireWorkManager;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 
 public class PreEndTask extends GunSGTask {
 
@@ -28,9 +27,6 @@ public class PreEndTask extends GunSGTask {
         playerManager.getGamePlayer().forEach(p -> p.getPlayer().getInventory().clear());
         this.fireWorkManager = MinigamesCore.getApi().getFireWorkManager();
         arena = MinigamesCore.getApi().getArenaManager().getFinalArena();
-        arena.getWorld().getEntities().forEach(e->{
-            if (e instanceof Item || e instanceof Projectile) e.remove();
-        });
         fireWorkManager.spawnFireWork(arena.getWarp("game"));
         fireWorkManager.spawnFireWork(arena.getWarp("deathmatch"));
         if (GunSG.customEnabled) {
@@ -69,9 +65,7 @@ public class PreEndTask extends GunSGTask {
     @Override
     public void onFinish() {
         gameBoard.destroy();
-        arena.getWorld().getEntities().forEach(e->{
-            if (e instanceof Item || e instanceof Projectile || e instanceof Firework) e.remove();
-        });
+        arena.getWorld().getEntitiesByClasses(Firework.class).forEach(Entity::remove);
         MinigamesCore.getApi().getGameManager().setState(GameState.ENDED);
     }
 
