@@ -1,6 +1,6 @@
 name: GunSurvivalGames
 main: com.ericlam.mc.gun.survival.games.main.GunSG
-version: 0.1.7-SNAPSHOT
+version: 0.1.8-SNAPSHOT
 author: Hydranapse_
 depend: [Minigames-Core, Vault, CrackShotPlus]
 softdepend: [CustomCSWeapon, CorpseReborn]
