@@ -28,16 +28,9 @@ bounty-get: "&a<player>&7 已得到設置於 &c<target>&7 的懸賞&6(<money> Ge
 bounty-win: "&a<player> &7獲得了設置在他的懸賞&6(<money> Gems)"
 bounty-fail: "你設置懸賞的那個玩家中途退出, 因此你的金錢已被恢復! &e(&7+&6<money> Gems&e)"
 no-gems: "&c你沒有足夠的 Gems"
+only-in-game: "&c只能在遊戲中的狀態下使用懸賞。"
 death-msg:
   normal: "&a<victim> &7<action>。"
   unknown-kill-player: "&a<attacker> &7殺死了 &c<victim> &7。"
   kill-player: "&a<attacker> &7使用了 &e<item> &7<action> &c<victim> &7。"
 quit-in-game: "&c<player> &7因中途離場而遭到淘汰！"
-gamestats-not-found: "&a你只能查看遊戲中的玩家的戰績。"
-gamestats-info:
-  - "&a<player> 的戰績:"
-  - "&7殺敵:&e <kills>"
-  - "&7死亡:&e <deaths>"
-  - "&7遊玩次數:&e <played>"
-  - "&7勝數:&e <wins>"
-  - "&b分數:&e <score>"

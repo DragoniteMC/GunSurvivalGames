@@ -2,7 +2,6 @@ package com.ericlam.mc.gun.survival.games.main;
 
 import com.ericlam.mc.gun.survival.games.GunSGConfig;
 import com.ericlam.mc.gun.survival.games.command.GunSGArenaCommand;
-import com.ericlam.mc.gun.survival.games.command.GunSGInfoCommand;
 import com.ericlam.mc.gun.survival.games.implement.area.GunSGArenaMechanic;
 import com.ericlam.mc.gun.survival.games.implement.handler.GunSGPlayerHandler;
 import com.ericlam.mc.gun.survival.games.implement.handler.GunSGStatsHandler;
@@ -104,7 +103,6 @@ public class GunSG extends JavaPlugin implements Listener {
         compulsory.registerArenaConfig(config);
         compulsory.registerArenaMechanic(new GunSGArenaMechanic());
         compulsory.registerArenaCommand(new GunSGArenaCommand(), this);
-        HyperNiteMC.getAPI().getCommandRegister().registerCommand(this, new GunSGInfoCommand());
         compulsory.registerVoteGUI(new InventoryBuilder(3, "&9地圖投票").ring(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE)), 11, 13, 15);
         compulsory.registerLobbyTask(new CountdownTask());
         compulsory.registerEndTask(new PreEndTask());

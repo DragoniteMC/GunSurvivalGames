@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -50,13 +49,10 @@ public class WantedManager {
                 .onClick(e -> {
                     e.setCancelled(true);
                     Player player = (Player) e.getWhoClicked();
-                    if (MinigamesCore.getApi().getGameManager().getGameState() != GameState.IN_GAME) return;
-                    player.openInventory(inventory);
-                }).onInteract(e -> {
-                    if (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-                    e.setCancelled(true);
-                    Player player = e.getPlayer();
-                    if (MinigamesCore.getApi().getGameManager().getGameState() != GameState.IN_GAME) return;
+                    if (MinigamesCore.getApi().getGameManager().getGameState() != GameState.IN_GAME) {
+                        player.sendMessage(GunSG.config().getMessage("only-in-game"));
+                        return;
+                    }
                     player.openInventory(inventory);
                 }).build();
     }
