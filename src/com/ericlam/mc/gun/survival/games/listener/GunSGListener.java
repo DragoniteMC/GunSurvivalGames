@@ -19,13 +19,10 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -34,7 +31,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.golde.bukkit.corpsereborn.CorpseAPI.CorpseAPI;
 
-import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -100,31 +96,7 @@ public class GunSGListener implements Listener {
             player.sendMessage(GunSG.config().getMessage("money-reward").replace("<money>", new BigDecimal(money).round(new MathContext(2, RoundingMode.HALF_DOWN)).toPlainString()));
         }
     }
-
-    @EventHandler
-    public void onItemDrag(InventoryDragEvent e) {
-        this.checkInventory(e.getInventory(), e);
-    }
-
-    private void checkInventory(@Nonnull Inventory inventory, Cancellable cancellable) {
-        switch (inventory.getType()) {
-            case CHEST:
-            case ENDER_CHEST:
-            case PLAYER:
-                return;
-            default:
-                break;
-        }
-
-        cancellable.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onItemClick(InventoryClickEvent e) {
-        if (e.getClickedInventory() == null) return;
-        this.checkInventory(e.getClickedInventory(), e);
-    }
-
+    
     @EventHandler
     public void onGamePlayerDeath(GamePlayerDeathEvent e) {
         GamePlayer gamePlayer = e.getGamePlayer();
