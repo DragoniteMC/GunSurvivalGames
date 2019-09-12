@@ -1,14 +1,14 @@
 package com.ericlam.mc.gun.survival.games.manager;
 
+import com.ericlam.mc.gun.survival.games.config.ChestConfig;
+import com.ericlam.mc.gun.survival.games.config.GSGConfig;
 import com.hypernite.mc.hnmc.core.builders.InventoryBuilder;
-import com.hypernite.mc.hnmc.core.managers.ConfigManager;
 import com.hypernite.mc.hnmc.core.utils.Tools;
 import com.shampaggon.crackshot.CSUtility;
 import me.DeeCaaD.CrackShotPlus.CSPapi;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -18,29 +18,29 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ChestsManager {
-    private FileConfiguration chests;
-    private ConfigManager configManager;
+    private final ChestConfig config;
+    private final GSGConfig gsgConfig;
     private List<ItemStack> tie1Items = new ArrayList<>();
     private List<ItemStack> tie2Items = new ArrayList<>();
     private CSUtility csUtility;
 
     private HashMap<Location, Inventory> chestCachedItems = new HashMap<>();
 
-    public ChestsManager(ConfigManager configManager) {
-        this.configManager = configManager;
-        this.chests = configManager.getConfig("chests.yml");
+    public ChestsManager(ChestConfig config, GSGConfig gsgConfig) {
+        this.config = config;
+        this.gsgConfig = gsgConfig;
         this.csUtility = new CSUtility();
     }
 
     public ChestsManager loadTie1Items() {
-        List<String> tie1Normal = chests.getStringList("tie1");
-        List<String> tie1Gun = chests.getStringList("tie1-guns");
+        List<String> tie1Normal = config.tie1Items;
+        List<String> tie1Gun = config.tie1Guns;
         return loadItems(tie1Normal, tie1Gun, tie1Items);
     }
 
     public ChestsManager loadTie2Items() {
-        List<String> tie2Normal = chests.getStringList("tie2");
-        List<String> tie2Gun = chests.getStringList("tie2-guns");
+        List<String> tie2Normal = config.tie2Items;
+        List<String> tie2Gun = config.tie2Guns;
         return loadItems(tie2Normal, tie2Gun, tie2Items);
     }
 
@@ -87,11 +87,11 @@ public class ChestsManager {
         switch (lootable.getType()) {
             case CHEST:
             case TRAPPED_CHEST:
-                max = configManager.getData("maxTie1Items", Integer.class).orElse(4);
+                max = gsgConfig.maxItemPerChest;
                 tieItems = tie1Items;
                 break;
             case ENDER_CHEST:
-                max = configManager.getData("maxTie2Items", Integer.class).orElse(5);
+                max = gsgConfig.maxItemPerTie2;
                 tieItems = tie2Items;
                 break;
             default:

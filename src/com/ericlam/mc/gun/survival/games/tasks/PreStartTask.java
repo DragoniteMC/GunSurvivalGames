@@ -24,7 +24,7 @@ public class PreStartTask extends GunSGTask {
         List<Location> spawns = arena.getWarp("game");
         MinigamesCore.getApi().getGameUtils().noLagTeleport(playerManager.getGamePlayer(), spawns, 2L);
         gameBoard = GunSG.getPlugin(GunSG.class).getGameBoard();
-        gameBoard.setLine("stats", "&7遊戲狀態: ".concat(GunSG.getMotd("preStart")));
+        gameBoard.setLine("stats", "&7遊戲狀態: ".concat(motdConfig.preStart));
     }
 
     @Override
@@ -34,7 +34,7 @@ public class PreStartTask extends GunSGTask {
 
     @Override
     public void onFinish() {
-        playerManager.getGamePlayer().forEach(g->{
+        playerManager.getGamePlayer().forEach(g -> {
             Player player = g.getPlayer();
             GunSG.playActiveSound(player);
             player.sendTitle("", configManager.getPureMessage("start-title"), 0, 30, 20);
@@ -43,12 +43,12 @@ public class PreStartTask extends GunSGTask {
 
     @Override
     public long run(long l) {
-        if (l % 10 == 0 || l <= 5){
+        if (l % 10 == 0 || l <= 5) {
             String time = MinigamesCore.getApi().getGameUtils().getTimeWithUnit(l);
             String subTitle = configManager.getPureMessage("pre-start-title").replace("<time>", time);
-            playerManager.getGamePlayer().forEach(g->{
+            playerManager.getGamePlayer().forEach(g -> {
                 Player player = g.getPlayer();
-                player.sendTitle("", subTitle, 10 , 20, 10);
+                player.sendTitle("", subTitle, 10, 20, 10);
                 GunSG.playCountSound(player);
             });
             Bukkit.broadcastMessage(configManager.getMessage("pre-start".concat(l <= 5 ? "-5" : "")).replace("<time>", time));
@@ -58,7 +58,7 @@ public class PreStartTask extends GunSGTask {
 
     @Override
     public long getTotalTime() {
-        return configManager.getData("preStartTime", Long.class).orElse(15L);
+        return gsgConfig.preStartTime;
     }
 
     @Override

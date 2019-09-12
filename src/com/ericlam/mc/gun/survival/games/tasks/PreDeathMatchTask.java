@@ -18,13 +18,13 @@ public class PreDeathMatchTask extends GunSGTask {
     public void initRun(PlayerManager playerManager) {
         List<Location> spawns = MinigamesCore.getApi().getArenaManager().getFinalArena().getWarp("deathmatch");
         MinigamesCore.getApi().getGameUtils().noLagTeleport(playerManager.getGamePlayer(), spawns, 2L);
-        playerManager.getSpectators().forEach(g->{
+        playerManager.getSpectators().forEach(g -> {
             Player player = g.getPlayer();
             player.setSpectatorTarget(null);
         });
         MinigamesCore.getApi().getGameUtils().noLagTeleport(playerManager.getSpectators(), 2L, spawns.get(0));
         gameBoard = GunSG.getPlugin(GunSG.class).getGameBoard();
-        gameBoard.setLine("stats", "&7遊戲狀態: ".concat(GunSG.getMotd("deathmatch")));
+        gameBoard.setLine("stats", "&7遊戲狀態: ".concat(motdConfig.preDeathMatch));
     }
 
     @Override
@@ -45,14 +45,14 @@ public class PreDeathMatchTask extends GunSGTask {
             Bukkit.getOnlinePlayers().forEach(GunSG::playCountSound);
             Bukkit.broadcastMessage(configManager.getMessage("peace-countdown").replace("<time>", time));
         }
-        int level = (int)l;
-        Bukkit.getOnlinePlayers().forEach(p->p.setLevel(level));
+        int level = (int) l;
+        Bukkit.getOnlinePlayers().forEach(p -> p.setLevel(level));
         return InGameTask.updateTimeShow(l, gameBoard);
     }
 
     @Override
     public long getTotalTime() {
-        return configManager.getData("preDeathMatchTime", Long.class).orElse(20L);
+        return gsgConfig.preDMTime;
     }
 
     @Override

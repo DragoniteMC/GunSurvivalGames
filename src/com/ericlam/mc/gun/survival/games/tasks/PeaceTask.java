@@ -15,7 +15,7 @@ public class PeaceTask extends GunSGTask {
     public void initRun(PlayerManager playerManager) {
         Bukkit.broadcastMessage(configManager.getMessage("start"));
         gameBoard = GunSG.getPlugin(GunSG.class).getGameBoard();
-        gameBoard.setLine("stats", "&7遊戲狀態: " + GunSG.getMotd("peace"));
+        gameBoard.setLine("stats", "&7遊戲狀態: " + motdConfig.peace);
     }
 
     @Override
@@ -30,19 +30,19 @@ public class PeaceTask extends GunSGTask {
 
     @Override
     public long run(long l) {
-        if (l % 30 == 0 || l < 6){
+        if (l % 30 == 0 || l < 6) {
             String time = MinigamesCore.getApi().getGameUtils().getTimeWithUnit(l);
             Bukkit.getOnlinePlayers().forEach(GunSG::playCountSound);
             Bukkit.broadcastMessage(configManager.getMessage("peace-countdown").replace("<time>", time));
         }
-        int level = (int)l;
-        Bukkit.getOnlinePlayers().forEach(p->p.setLevel(level));
+        int level = (int) l;
+        Bukkit.getOnlinePlayers().forEach(p -> p.setLevel(level));
         return InGameTask.updateTimeShow(l, gameBoard);
     }
 
     @Override
     public long getTotalTime() {
-        return configManager.getData("peaceTime", Long.class).orElse(20L);
+        return gsgConfig.peaceTime;
     }
 
     @Override

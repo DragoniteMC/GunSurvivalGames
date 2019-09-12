@@ -38,14 +38,14 @@ public class PreEndTask extends GunSGTask {
         this.survivor = playerManager.getGamePlayer().size() == 1 ? playerManager.getGamePlayer().get(0).getPlayer() : null;
         if (survivor != null) {
             if (survivor.isOnline()) survivor.sendTitle(configManager.getPureMessage("win-title"), "", 20, 100, 20);
-            double win = GunSG.config().getData("rewardWins", Double.class).orElse(0.0d);
+            double win = gsgConfig.rewardWins;
             GunSGListener.reward(survivor, win);
             GunSG.getPlugin(GunSG.class).getWantedManager().onBountyWin(survivor);
         }
         Bukkit.broadcastMessage(configManager.getMessage("game-end").replace("<arena>", arena.getDisplayName()).replace("<player>", (survivor == null ? "無" : survivor.getDisplayName())));
 
-        MinigamesCore.getApi().getGameStatsManager().saveAll().whenComplete((v,ex)->{
-            if (ex != null){
+        MinigamesCore.getApi().getGameStatsManager().saveAll().whenComplete((v, ex) -> {
+            if (ex != null) {
                 ex.printStackTrace();
                 return;
             }

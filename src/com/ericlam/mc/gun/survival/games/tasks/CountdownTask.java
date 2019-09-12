@@ -27,36 +27,36 @@ public class CountdownTask extends GunSGTask {
 
     @Override
     public void onFinish() {
-        playerManager.getWaitingPlayer().forEach(g->playerManager.setGamePlayer(g));
+        playerManager.getWaitingPlayer().forEach(g -> playerManager.setGamePlayer(g));
     }
 
     @Override
     public long run(long l) {
-        if (l == 6){
+        if (l == 6) {
             MinigamesCore.getApi().getLobbyManager().runFinalResult();
             Arena arena = MinigamesCore.getApi().getArenaManager().getFinalArena();
             List<Location> spawns = arena.getWarp("game");
             MinigamesCore.getApi().getGameUtils().unLagIterate(spawns, location -> location.getChunk().load(true), 5L);
             cancel = false;
         }
-        int boost = configManager.getData("boostPlayers", Integer.class).orElse(23);
-        long boostTime = configManager.getData("boostTime", Long.class).orElse(30L);
-        if (playerManager.getWaitingPlayer().size() >= boost && l > boostTime+1){
+        int boost = gsgConfig.boostPlayers;
+        long boostTime = gsgConfig.boostTime;
+        if (playerManager.getWaitingPlayer().size() >= boost && l > boostTime + 1) {
             Bukkit.broadcastMessage(configManager.getMessage("lobby-boost"));
             l -= boostTime;
         }
-        int level = (int)l;
-        playerManager.getWaitingPlayer().forEach(g->g.getPlayer().setLevel(level));
+        int level = (int) l;
+        playerManager.getWaitingPlayer().forEach(g -> g.getPlayer().setLevel(level));
         return l;
     }
 
     @Override
     public long getTotalTime() {
-        return configManager.getData("countdownTime", Long.class).orElse(30L);
+        return gsgConfig.countDownTime;
     }
 
     @Override
     public boolean shouldCancel() {
-        return cancel && playerManager.getWaitingPlayer().size() < configManager.getData("requiredPlayers", Integer.class).orElse(2);
+        return cancel && playerManager.getWaitingPlayer().size() < gsgConfig.requiredPlayers;
     }
 }

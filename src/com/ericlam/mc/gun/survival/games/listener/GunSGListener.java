@@ -1,5 +1,6 @@
 package com.ericlam.mc.gun.survival.games.listener;
 
+import com.ericlam.mc.gun.survival.games.config.GSGConfig;
 import com.ericlam.mc.gun.survival.games.main.GunSG;
 import com.ericlam.mc.minigames.core.character.GamePlayer;
 import com.ericlam.mc.minigames.core.event.player.CrackShotDeathEvent;
@@ -10,7 +11,7 @@ import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
 import com.hypernite.mc.hnmc.core.main.HyperNiteMC;
-import com.hypernite.mc.hnmc.core.managers.ConfigManager;
+import com.hypernite.mc.hnmc.core.managers.YamlManager;
 import com.shampaggon.crackshot.CSDirector;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -38,6 +39,19 @@ import java.util.Locale;
 
 public class GunSGListener implements Listener {
 
+    private YamlManager yamlManager;
+
+    public GunSGListener(YamlManager yamlManager) {
+        this.yamlManager = yamlManager;
+    }
+
+    public static void reward(Player player, double money) {
+        Economy economy = HyperNiteMC.getAPI().getVaultAPI().getEconomy();
+        if (economy.depositPlayer(player, money).type == EconomyResponse.ResponseType.SUCCESS && player.isOnline()) {
+            player.sendMessage(GunSG.getYamlManager().getMessage("money-reward").replace("<money>", new BigDecimal(money).round(new MathContext(2, RoundingMode.HALF_DOWN)).toPlainString()));
+        }
+    }
+
     @EventHandler
     public void onGamePlayerQuit(GamePlayerQuitEvent e) {
         GamePlayer gamePlayer = e.getGamePlayer();
@@ -45,7 +59,7 @@ public class GunSGListener implements Listener {
         if (e.getGameState() != GameState.IN_GAME && e.getGameState() != GameState.PRESTART) return;
         Player player = gamePlayer.getPlayer();
         MinigamesCore.getApi().getGameStatsManager().addDeaths(gamePlayer, 1);
-        Bukkit.broadcastMessage(GunSG.config().getMessage("quit-in-game").replace("<player>", player.getDisplayName()));
+        Bukkit.broadcastMessage(yamlManager.getMessage("quit-in-game").replace("<player>", player.getDisplayName()));
         GunSG.getPlugin(GunSG.class).getWantedManager().onBountyFail(player);
         handleDeath(gamePlayer);
     }
@@ -70,7 +84,7 @@ public class GunSGListener implements Listener {
         player.getWorld().playSound(playerLoc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 50, 1);
         MinigamesCore.getApi().getPlayerManager().setSpectator(gamePlayer);
         GunSG.getPlugin(GunSG.class).getWantedManager().removeGamer(gamePlayer);
-        if (player.isOnGround()) player.sendTitle(GunSG.config().getPureMessage("die-title"), "", 20, 60, 20);
+        if (player.isOnGround()) player.sendTitle(yamlManager.getPureMessage("die-title"), "", 20, 60, 20);
     }
 
     @EventHandler
@@ -90,20 +104,13 @@ public class GunSGListener implements Listener {
         }
     }
 
-    public static void reward(Player player, double money) {
-        Economy economy = HyperNiteMC.getAPI().getVaultAPI().getEconomy();
-        if (economy.depositPlayer(player, money).type == EconomyResponse.ResponseType.SUCCESS && player.isOnline()) {
-            player.sendMessage(GunSG.config().getMessage("money-reward").replace("<money>", new BigDecimal(money).round(new MathContext(2, RoundingMode.HALF_DOWN)).toPlainString()));
-        }
-    }
-    
     @EventHandler
     public void onGamePlayerDeath(GamePlayerDeathEvent e) {
         GamePlayer gamePlayer = e.getGamePlayer();
         if (gamePlayer.getStatus() != GamePlayer.Status.GAMING) return;
         Player player = gamePlayer.getPlayer();
         handleDeath(gamePlayer);
-        ConfigManager cf = GunSG.config();
+        final YamlManager cf = yamlManager;
         if (e.getKiller() == null) {
             Bukkit.broadcastMessage(cf.getMessage("death-msg.normal").replace("<victim>", player.getDisplayName()).replace("<action>", e.getAction()));
             return;
@@ -133,15 +140,14 @@ public class GunSGListener implements Listener {
                     .replace("<item>", grenade ? cs.getWeaponTitle() : csDirector.getPureName(itemName))
                     .replace("<victim>", player.getDisplayName())
                     .replace("<action>", e.getAction()));
-        }
-        else {
+        } else {
             Bukkit.broadcastMessage(cf.getMessage("death-msg.kill-player")
                     .replace("<attacker>", killer.getDisplayName())
                     .replace("<item>", csDirector.getPureName(itemName))
                     .replace("<victim>", player.getDisplayName())
                     .replace("<action>", e.getAction()));
         }
-        double reward = GunSG.config().getData("rewardKills", Double.class).orElse(0.0d);
+        double reward = yamlManager.getConfigAs(GSGConfig.class).rewardKills;
         reward(killer, reward);
         GunSG.getPlugin(GunSG.class).getWantedManager().onBountyKill(killer, player);
     }

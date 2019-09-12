@@ -49,7 +49,7 @@ public class InGameTask extends GunSGTask {
         this.dmLocationSize = arena.getWarp("deathmatch").size();
         this.DMEnabled = playerManager.getGamePlayer().size() > dmLocationSize;
         gameBoard = GunSG.getPlugin(GunSG.class).getGameBoard();
-        gameBoard.setLine("stats", "&7遊戲狀態: ".concat(GunSG.getMotd("starting")));
+        gameBoard.setLine("stats", "&7遊戲狀態: ".concat(motdConfig.starting));
     }
 
     @Override
@@ -90,7 +90,7 @@ public class InGameTask extends GunSGTask {
 
     @Override
     public long getTotalTime() {
-        return configManager.getData("gameTime", Long.class).orElse(600L);
+        return gsgConfig.gameTime;
     }
 
     @Override

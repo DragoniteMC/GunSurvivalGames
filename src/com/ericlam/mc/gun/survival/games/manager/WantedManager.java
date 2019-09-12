@@ -1,12 +1,14 @@
 package com.ericlam.mc.gun.survival.games.manager;
 
-import com.ericlam.mc.gun.survival.games.main.GunSG;
+import com.ericlam.mc.gun.survival.games.config.GSGConfig;
+import com.ericlam.mc.gun.survival.games.config.component.WantedOption;
 import com.ericlam.mc.minigames.core.character.GamePlayer;
 import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.hypernite.mc.hnmc.core.builders.InventoryBuilder;
 import com.hypernite.mc.hnmc.core.builders.ItemStackBuilder;
 import com.hypernite.mc.hnmc.core.main.HyperNiteMC;
+import com.hypernite.mc.hnmc.core.managers.YamlManager;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -34,23 +36,27 @@ public class WantedManager {
     private ItemStack wantedItem;
     private Inventory inventory;
     private Map<Player, Inventory> rewardInventory = new HashMap<>();
+    private final YamlManager yamlManager;
+    private final WantedOption wantedOption;
 
-    public WantedManager(Economy economy) {
+    public WantedManager(Economy economy, YamlManager yamlManager) {
         this.economy = economy;
+        this.yamlManager = yamlManager;
+        this.wantedOption = yamlManager.getConfigAs(GSGConfig.class).wantedOption;
     }
 
     public void loadWantedItem() {
         //Validate.notNull(inventory, "wanted inventory has not loaded");
-        String name = GunSG.config().getData("wantedItemName", String.class).orElse("§c懸賞");
-        List<String> lore = GunSG.config().getDataList("wantedItemLore", String.class);
-        Material material = Material.getMaterial(GunSG.config().getData("wantedItemMaterial", String.class).orElse("ROSE_BUSH"));
+        String name = wantedOption.name;
+        List<String> lore = wantedOption.lore;
+        Material material = wantedOption.material;
         if (material == null) material = Material.STONE;
         wantedItem = new ItemStackBuilder(material).displayName(name).lore(lore)
                 .onClick(e -> {
                     e.setCancelled(true);
                     Player player = (Player) e.getWhoClicked();
                     if (MinigamesCore.getApi().getGameManager().getGameState() != GameState.IN_GAME) {
-                        player.sendMessage(GunSG.config().getMessage("only-in-game"));
+                        player.sendMessage(yamlManager.getMessage("only-in-game"));
                         return;
                     }
                     player.openInventory(inventory);
@@ -91,8 +97,8 @@ public class WantedManager {
     }
 
     private Inventory createRewardInventory(@Nonnull Player player) {
-        List<Double> doubleList = GunSG.config().getDataList("wantedDoubleList", Double.class);
-        int row = (int) Math.ceil(doubleList.size() / 9);
+        List<Double> doubleList = wantedOption.money;
+        int row = (int) Math.ceil((double) doubleList.size() / 9);
         InventoryBuilder builder = new InventoryBuilder(row == 0 ? 1 : row, "&c懸賞 ".concat(player.getDisplayName()).concat(" 的價目"));
         for (double dou : doubleList) {
             ItemStack item = new ItemStackBuilder(Material.GOLD_NUGGET).displayName(ChatColor.GOLD + "" + dou + " Gems").lore("&7點擊以懸賞")
@@ -103,7 +109,7 @@ public class WantedManager {
                             clicker.sendMessage(MinigamesCore.getProperties().getMinigameConfig().getMessage("spectate-not-gamer"));
                             return;
                         }
-                        String msg = GunSG.config().getMessage("no-gems");
+                        String msg = yamlManager.getMessage("no-gems");
                         Economy economy = HyperNiteMC.getAPI().getVaultAPI().getEconomy();
                         if (economy.withdrawPlayer(clicker, dou).type != EconomyResponse.ResponseType.SUCCESS) {
                             clicker.sendMessage(msg);
@@ -113,7 +119,7 @@ public class WantedManager {
                         this.spentList.get(clicker).computeIfPresent(player, (p, d) -> d + dou);
                         this.spentList.get(clicker).putIfAbsent(player, dou);
                         double bounty = this.spentList.values().stream().filter(map -> map.containsKey(player)).mapToDouble(map -> map.get(player)).sum();
-                        Bukkit.broadcastMessage(GunSG.config().getMessage("bounty-set")
+                        Bukkit.broadcastMessage(yamlManager.getMessage("bounty-set")
                                 .replace("<player>", clicker.getDisplayName())
                                 .replace("<target>", player.getDisplayName()).replace("<money>", dou + "")
                                 .replace("<bounty>", round(bounty)));
@@ -131,7 +137,7 @@ public class WantedManager {
         if (this.spentList.values().stream().noneMatch(map -> map.containsKey(victim))) return;
         double bounty = this.spentList.values().stream().filter(map -> map.containsKey(victim)).mapToDouble(map -> map.get(victim)).sum();
         economy.depositPlayer(killer, bounty);
-        String msg = GunSG.config().getMessage("bounty-get").replace("<player>", killer.getDisplayName()).replace("<target>", victim.getDisplayName()).replace("<money>", round(bounty));
+        String msg = yamlManager.getMessage("bounty-get").replace("<player>", killer.getDisplayName()).replace("<target>", victim.getDisplayName()).replace("<money>", round(bounty));
         Bukkit.broadcastMessage(msg);
     }
 
@@ -142,7 +148,7 @@ public class WantedManager {
         returnList.forEach((k, v) -> {
             double returnMoney = v.get(victim);
             economy.depositPlayer(k, returnMoney);
-            k.sendMessage(GunSG.config().getMessage("bounty-fail").replace("<money>", round(returnMoney)));
+            k.sendMessage(yamlManager.getMessage("bounty-fail").replace("<money>", round(returnMoney)));
             v.remove(victim);
         });
     }
@@ -152,7 +158,7 @@ public class WantedManager {
         if (this.spentList.values().stream().noneMatch(map -> map.containsKey(victim))) return;
         double bounty = this.spentList.values().stream().filter(map -> map.containsKey(victim)).mapToDouble(map -> map.get(victim)).sum();
         economy.depositPlayer(victim, bounty);
-        Bukkit.broadcastMessage(GunSG.config().getMessage("bounty-win").replace("<player>", victim.getDisplayName()).replace("<money>", round(bounty)));
+        Bukkit.broadcastMessage(yamlManager.getMessage("bounty-win").replace("<player>", victim.getDisplayName()).replace("<money>", round(bounty)));
         this.spentList.forEach((k, v) -> v.remove(victim));
     }
 }

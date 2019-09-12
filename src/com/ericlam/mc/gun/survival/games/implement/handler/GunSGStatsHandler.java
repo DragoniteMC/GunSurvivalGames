@@ -21,12 +21,12 @@ public class GunSGStatsHandler implements GameStatsHandler {
 
     private final SQLDataSource sqlDataSource;
 
-    public GunSGStatsHandler(){
+    public GunSGStatsHandler() {
         this.sqlDataSource = HyperNiteMC.getAPI().getSQLDataSource();
-        CompletableFuture.runAsync(()->{
-            try(Connection connection = sqlDataSource.getConnection();
-                PreparedStatement statement =
-                        connection.prepareStatement("CREATE TABLE IF NOT EXISTS `GunSG_stats` (`uuid` VARCHAR(40) NOT NULL  PRIMARY KEY, `name` TINYTEXT NOT NULL , `kills` MEDIUMINT DEFAULT 0, `deaths` MEDIUMINT DEFAULT 0, `wins` MEDIUMINT DEFAULT 0, `played` MEDIUMINT DEFAULT 0, `scores` DOUBLE DEFAULT 0)")) {
+        CompletableFuture.runAsync(() -> {
+            try (Connection connection = sqlDataSource.getConnection();
+                 PreparedStatement statement =
+                         connection.prepareStatement("CREATE TABLE IF NOT EXISTS `GunSG_stats` (`uuid` VARCHAR(40) NOT NULL  PRIMARY KEY, `name` TINYTEXT NOT NULL , `kills` MEDIUMINT DEFAULT 0, `deaths` MEDIUMINT DEFAULT 0, `wins` MEDIUMINT DEFAULT 0, `played` MEDIUMINT DEFAULT 0, `scores` DOUBLE DEFAULT 0)")) {
                 statement.execute();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -37,12 +37,12 @@ public class GunSGStatsHandler implements GameStatsHandler {
     @Nonnull
     @Override
     public GameStatsEditor loadGameStatsData(@Nonnull Player player) {
-        try(Connection connection = sqlDataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement("SELECT `kills`, `wins`, `deaths`, `played` FROM `GunSG_stats` WHERE `uuid`=? OR `name`=?")){
+        try (Connection connection = sqlDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT `kills`, `wins`, `deaths`, `played` FROM `GunSG_stats` WHERE `uuid`=? OR `name`=?")) {
             statement.setString(1, player.getUniqueId().toString());
             statement.setString(2, player.getName());
             ResultSet set = statement.executeQuery();
-            if (set.next()){
+            if (set.next()) {
                 int kills = set.getInt("kills");
                 int deaths = set.getInt("deaths");
                 int wins = set.getInt("wins");
@@ -57,10 +57,10 @@ public class GunSGStatsHandler implements GameStatsHandler {
 
     @Override
     public CompletableFuture<Void> saveGameStatsData(OfflinePlayer offlinePlayer, GameStats gameStats) {
-        return CompletableFuture.runAsync(()->{
-            try(Connection connection = sqlDataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement(
-                        "INSERT INTO `GunSG_stats` VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `name`=?, `kills`=?, `deaths`=?, `wins`=?, `played`=?, `scores`=? ")){
+        return CompletableFuture.runAsync(() -> {
+            try (Connection connection = sqlDataSource.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(
+                         "INSERT INTO `GunSG_stats` VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `name`=?, `kills`=?, `deaths`=?, `wins`=?, `played`=?, `scores`=? ")) {
                 setStatement(offlinePlayer, gameStats, statement);
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -70,10 +70,10 @@ public class GunSGStatsHandler implements GameStatsHandler {
 
     @Override
     public CompletableFuture<Void> saveGameStatsData(Map<OfflinePlayer, GameStats> map) {
-        return CompletableFuture.runAsync(()->{
-            try(Connection connection = sqlDataSource.getConnection()){
-                map.forEach((offlinePlayer, gameStats)->{
-                    try(PreparedStatement statement = connection.prepareStatement(
+        return CompletableFuture.runAsync(() -> {
+            try (Connection connection = sqlDataSource.getConnection()) {
+                map.forEach((offlinePlayer, gameStats) -> {
+                    try (PreparedStatement statement = connection.prepareStatement(
                             "INSERT INTO `GunSG_stats` VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `name`=?, `kills`=?, `deaths`=?, `wins`=?, `played`=?, `scores`=? ")) {
                         setStatement(offlinePlayer, gameStats, statement);
                     } catch (SQLException e) {

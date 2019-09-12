@@ -29,28 +29,8 @@ public class GunSGArena implements CreateArena {
         this.description = description;
     }
 
-    public GunSGArena(String author, String arenaName, World world){
+    public GunSGArena(String author, String arenaName, World world) {
         this(author, arenaName, arenaName, new HashMap<>(), world, new ArrayList<>());
-    }
-
-    @Override
-    public void setAuthor(String s) {
-        this.author = s;
-    }
-
-    @Override
-    public void setWorld(World world) {
-        this.world = world;
-    }
-
-    @Override
-    public void setArenaName(String s) {
-        this.arenaName = s;
-    }
-
-    @Override
-    public void setDisplayName(String s) {
-        this.displayName = ChatColor.translateAlternateColorCodes('&', s);
     }
 
     @Override
@@ -70,8 +50,8 @@ public class GunSGArena implements CreateArena {
 
     @Override
     public boolean isSetupCompleted() {
-        boolean game = Optional.ofNullable(warpMap.get("game")).map(w->w.size() == 24).orElse(false);
-        boolean dm = Optional.ofNullable(warpMap.get("deathmatch")).map(w->w.size() >= 4).orElse(false);
+        boolean game = Optional.ofNullable(warpMap.get("game")).map(w -> w.size() == 24).orElse(false);
+        boolean dm = Optional.ofNullable(warpMap.get("deathmatch")).map(w -> w.size() >= 4).orElse(false);
         return game && dm;
     }
 
@@ -81,8 +61,18 @@ public class GunSGArena implements CreateArena {
     }
 
     @Override
+    public void setAuthor(String s) {
+        this.author = s;
+    }
+
+    @Override
     public World getWorld() {
         return world;
+    }
+
+    @Override
+    public void setWorld(World world) {
+        this.world = world;
     }
 
     @Override
@@ -91,8 +81,18 @@ public class GunSGArena implements CreateArena {
     }
 
     @Override
+    public void setArenaName(String s) {
+        this.arenaName = s;
+    }
+
+    @Override
     public String getDisplayName() {
         return displayName;
+    }
+
+    @Override
+    public void setDisplayName(String s) {
+        this.displayName = ChatColor.translateAlternateColorCodes('&', s);
     }
 
     @Override
@@ -107,17 +107,17 @@ public class GunSGArena implements CreateArena {
 
     @Override
     public String[] getInfo() {
-        String[] info =  new String[]{
+        String[] info = new String[]{
                 "§e場地名稱: §7".concat(arenaName),
                 "§e顯示名稱: §7".concat(displayName),
                 "§e場地作者: §7".concat(author),
                 "§e世界: §7".concat(world.getName()),
-                "§e坐標: §7".concat(warpMap.keySet().stream().map(w->w.concat("("+warpMap.get(w).size()+")")).collect(Collectors.joining(", "))),
+                "§e坐標: §7".concat(warpMap.keySet().stream().map(w -> w.concat("(" + warpMap.get(w).size() + ")")).collect(Collectors.joining(", "))),
                 "§e描述: §7"
         };
 
-        String[] desp = description.stream().map(s->" ".repeat(5).concat(s)).toArray(String[]::new);
+        String[] desp = description.stream().map(s -> " ".repeat(5).concat(s)).toArray(String[]::new);
 
-        return (String[])ArrayUtils.addAll(info, desp);
+        return (String[]) ArrayUtils.addAll(info, desp);
     }
 }

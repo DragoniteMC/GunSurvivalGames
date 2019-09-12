@@ -13,7 +13,7 @@ public class GunSGPlayer implements GamePlayer {
 
     public GunSGPlayer(Player player, Status status) {
         this.player = player;
-        Optional.ofNullable(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).ifPresent(a->{
+        Optional.ofNullable(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).ifPresent(a -> {
             a.setBaseValue(100);
             player.setHealthScale(20);
             player.setHealth(a.getBaseValue());

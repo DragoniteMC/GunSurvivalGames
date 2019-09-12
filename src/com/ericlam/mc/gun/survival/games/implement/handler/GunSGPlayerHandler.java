@@ -1,5 +1,6 @@
 package com.ericlam.mc.gun.survival.games.implement.handler;
 
+import com.ericlam.mc.gun.survival.games.config.GSGConfig;
 import com.ericlam.mc.gun.survival.games.implement.player.GunSGPlayer;
 import com.ericlam.mc.gun.survival.games.main.GunSG;
 import com.ericlam.mc.minigames.core.character.GamePlayer;
@@ -16,8 +17,8 @@ public class GunSGPlayerHandler implements GamePlayerHandler {
     public void onPlayerStatusChange(GamePlayer gamePlayer, GamePlayer.Status status) {
         Player player = gamePlayer.getPlayer();
         player.setGameMode(gamePlayer.getStatus() == GamePlayer.Status.SPECTATING ? GameMode.SPECTATOR : GameMode.ADVENTURE);
-        Optional.ofNullable(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).ifPresent(attr-> player.setHealth(attr.getBaseValue()));
-        player.getActivePotionEffects().forEach(effect->player.removePotionEffect(effect.getType()));
+        Optional.ofNullable(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).ifPresent(attr -> player.setHealth(attr.getBaseValue()));
+        player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
         player.setLevel(0);
         player.setFireTicks(0);
         player.setGlowing(false);
@@ -38,7 +39,7 @@ public class GunSGPlayerHandler implements GamePlayerHandler {
 
     @Override
     public int requireStart() {
-        return GunSG.config().getData("requiredPlayers", Integer.class).orElse(2);
+        return GunSG.getYamlManager().getConfigAs(GSGConfig.class).requiredPlayers;
     }
 
 

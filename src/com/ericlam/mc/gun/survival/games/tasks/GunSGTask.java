@@ -1,17 +1,23 @@
 package com.ericlam.mc.gun.survival.games.tasks;
 
+import com.ericlam.mc.gun.survival.games.config.GSGConfig;
+import com.ericlam.mc.gun.survival.games.config.MotdConfig;
 import com.ericlam.mc.gun.survival.games.main.GunSG;
 import com.ericlam.mc.minigames.core.SectionTask;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
-import com.hypernite.mc.hnmc.core.managers.ConfigManager;
+import com.hypernite.mc.hnmc.core.managers.YamlManager;
 
 public abstract class GunSGTask implements SectionTask {
-    ConfigManager configManager;
+    YamlManager configManager;
     PlayerManager playerManager;
+    GSGConfig gsgConfig;
+    MotdConfig motdConfig;
     private boolean running;
 
-    public GunSGTask(){
-        this.configManager = GunSG.config();
+    public GunSGTask() {
+        this.configManager = GunSG.getYamlManager();
+        this.gsgConfig = configManager.getConfigAs(GSGConfig.class);
+        this.motdConfig = configManager.getConfigAs(MotdConfig.class);
         this.running = false;
     }
 

@@ -15,7 +15,7 @@ public class DeathMatchTask extends GunSGTask {
     @Override
     public void initRun(PlayerManager playerManager) {
         gameBoard = GunSG.getPlugin(GunSG.class).getGameBoard();
-        gameBoard.setLine("stats", "&7遊戲狀態: " + GunSG.getMotd("deathmatch"));
+        gameBoard.setLine("stats", "&7遊戲狀態: " + motdConfig.deathmatch);
     }
 
     @Override
@@ -30,23 +30,23 @@ public class DeathMatchTask extends GunSGTask {
 
     @Override
     public long run(long l) {
-        if (l % 60 == 0 || l < 6 || l == 10){
+        if (l % 60 == 0 || l < 6 || l == 10) {
             String time = MinigamesCore.getApi().getGameUtils().getTimeWithUnit(l);
             Bukkit.broadcastMessage(configManager.getMessage("deathmatch-count").replace("<time>", time));
             Bukkit.getOnlinePlayers().forEach(GunSG::playCountSound);
-            if (l == 60){
+            if (l == 60) {
                 Bukkit.broadcastMessage(configManager.getMessage("glowing-mode"));
-                playerManager.getGamePlayer().forEach(g->g.getPlayer().setGlowing(true));
+                playerManager.getGamePlayer().forEach(g -> g.getPlayer().setGlowing(true));
             }
         }
-        int level = (int)l;
-        Bukkit.getOnlinePlayers().forEach(p->p.setLevel(level));
+        int level = (int) l;
+        Bukkit.getOnlinePlayers().forEach(p -> p.setLevel(level));
         return InGameTask.updateTimeShow(l, gameBoard);
     }
 
     @Override
     public long getTotalTime() {
-        return configManager.getData("deathMatchTime", Long.class).orElse(300L);
+        return gsgConfig.deathMatchTime;
     }
 
     @Override

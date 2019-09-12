@@ -1,10 +1,6 @@
 package com.ericlam.mc.gun.survival.games.implement.stats;
 
-import com.ericlam.mc.gun.survival.games.main.GunSG;
 import com.ericlam.mc.minigames.core.gamestats.GameStatsEditor;
-import org.bukkit.ChatColor;
-
-import java.util.Arrays;
 
 public class GunSGGameStats implements GameStatsEditor {
 
@@ -20,28 +16,8 @@ public class GunSGGameStats implements GameStatsEditor {
         this.wins = wins;
     }
 
-    public GunSGGameStats(){
-        this(0,0,0,0);
-    }
-
-    @Override
-    public void setKills(int i) {
-        this.kills = i;
-    }
-
-    @Override
-    public void setDeaths(int i) {
-        this.deaths = i;
-    }
-
-    @Override
-    public void setPlayed(int i) {
-        this.played = i;
-    }
-
-    @Override
-    public void setWins(int i) {
-        this.wins = i;
+    public GunSGGameStats() {
+        this(0, 0, 0, 0);
     }
 
     @Override
@@ -50,8 +26,18 @@ public class GunSGGameStats implements GameStatsEditor {
     }
 
     @Override
+    public void setPlayed(int i) {
+        this.played = i;
+    }
+
+    @Override
     public int getKills() {
         return kills;
+    }
+
+    @Override
+    public void setKills(int i) {
+        this.kills = i;
     }
 
     @Override
@@ -60,8 +46,18 @@ public class GunSGGameStats implements GameStatsEditor {
     }
 
     @Override
+    public void setDeaths(int i) {
+        this.deaths = i;
+    }
+
+    @Override
     public int getWins() {
         return wins;
+    }
+
+    @Override
+    public void setWins(int i) {
+        this.wins = i;
     }
 
     @Override
@@ -71,13 +67,12 @@ public class GunSGGameStats implements GameStatsEditor {
 
     @Override
     public String[] getInfo() {
-        return Arrays.stream(GunSG.config().getMessageList("gamestats-info", true))
-                .map(l -> ChatColor.translateAlternateColorCodes('&', l
-                        .replace("<kills>", kills + "")
-                        .replace("<deaths>", deaths + "")
-                        .replace("<wins>", wins + "")
-                        .replace("<played>", played + "")
-                        .replace("<score>", getScores() + "")))
-                .toArray(String[]::new);
+        return new String[]{
+                "&d殺數: &f".concat(kills + ""),
+                "&d勝數: &f".concat(wins + ""),
+                "&d死亡: &f".concat(deaths + ""),
+                "&d遊玩: &f".concat(played + ""),
+                "&a分數: &f".concat(getScores() + "")
+        };
     }
 }
