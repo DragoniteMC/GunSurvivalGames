@@ -9,7 +9,6 @@ import com.ericlam.mc.minigames.core.event.player.GamePlayerJoinEvent;
 import com.ericlam.mc.minigames.core.event.player.GamePlayerQuitEvent;
 import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
-import com.ericlam.mc.minigames.core.manager.PlayerManager;
 import com.hypernite.mc.hnmc.core.main.HyperNiteMC;
 import com.hypernite.mc.hnmc.core.managers.YamlManager;
 import com.shampaggon.crackshot.CSDirector;
@@ -24,7 +23,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
@@ -85,16 +83,6 @@ public class GunSGListener implements Listener {
         MinigamesCore.getApi().getPlayerManager().setSpectator(gamePlayer);
         GunSG.getPlugin(GunSG.class).getWantedManager().removeGamer(gamePlayer);
         if (player.isOnGround()) player.sendTitle(yamlManager.getPureMessage("die-title"), "", 20, 60, 20);
-    }
-
-    @EventHandler
-    public void onSpectatorChat(AsyncPlayerChatEvent e) {
-        PlayerManager playerManager = MinigamesCore.getApi().getPlayerManager();
-        playerManager.findPlayer(e.getPlayer()).ifPresent(g -> {
-            if (g.getStatus() != GamePlayer.Status.SPECTATING) return;
-            e.getRecipients().removeIf(p -> playerManager.findPlayer(p).map(gx -> gx.getStatus() == GamePlayer.Status.GAMING).orElse(false));
-            e.setFormat("§9觀戰§8//§r" + e.getFormat());
-        });
     }
 
     @EventHandler
