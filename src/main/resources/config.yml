@@ -1,0 +1,36 @@
+maxLoadArenas: 3
+maxItemPerChest: 4
+maxItemPerTie2: 5
+lobbyLocation:
+requiredPlayers: 2
+#make countdown time faster
+boostPlayers: 4
+gameTime: 600
+peaceTime: 20
+countDownTime: 60
+boostTime: 30
+preStartTime: 10
+preDeathMatchTime: 20
+deathMatchTime: 300
+fallbackServer: gsglobby
+compassMaxTrack: 20
+rewardKills: 20
+rewardWins: 50
+countDownSound: BLOCK_NOTE_BLOCK_SNARE:1:1
+activeSound: BLOCK_NOTE_BLOCK_PLING:1:1
+
+wantedItem:
+  material: ROSE_BUSH
+  name: "&c懸賞"
+  lore:
+    - "&c點擊打開懸賞選單"
+  money:
+    - 50.0
+    - 100.0
+    - 200.0
+    - 300.0
+    - 400.0
+    - 600.0
+    - 1000.0
+    - 1500.0
+    - 3000.0
