@@ -15,12 +15,11 @@ import java.util.List;
 public class PreStartTask extends GunSGTask {
 
     private GameBoard gameBoard;
-    private Arena arena;
 
     @Override
     public void initRun(PlayerManager playerManager) {
         MinigamesCore.getApi().getGameManager().setState(GameState.PRESTART);
-        arena = MinigamesCore.getApi().getArenaManager().getFinalArena();
+        Arena arena = MinigamesCore.getApi().getArenaManager().getFinalArena();
         List<Location> spawns = arena.getWarp("game");
         MinigamesCore.getApi().getGameUtils().noLagTeleport(playerManager.getGamePlayer(), spawns, 2L);
         gameBoard = GunSG.getPlugin(GunSG.class).getGameBoard();
