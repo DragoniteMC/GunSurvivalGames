@@ -29,6 +29,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.golde.bukkit.corpsereborn.CorpseAPI.CorpseAPI;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -69,7 +70,7 @@ public class GunSGListener implements Listener {
         PlayerInventory inventory = player.getInventory();
         if (GunSG.corpseEnabled) {
             //not support 1.15.2
-            //CorpseAPI.spawnCorpse(player, player.getLocation(), inventory.getContents(), inventory.getHelmet(), inventory.getChestplate(), inventory.getLeggings(), inventory.getBoots(), inventory.getItemInMainHand());
+            CorpseAPI.spawnCorpse(player, player.getLocation(), inventory.getContents(), inventory.getHelmet(), inventory.getChestplate(), inventory.getLeggings(), inventory.getBoots(), inventory.getItemInMainHand());
         } else {
             final World world = player.getWorld();
             ItemStack[] items = inventory.getStorageContents();

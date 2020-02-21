@@ -4,7 +4,7 @@ version: ${project.version}
 author: Hydranapse_
 depend: [Minigames-Core, Vault, CrackShotPlus]
 softdepend: [CustomCSWeapon, CorpseReborn]
-api-version: "1.13"
+api-version: "1.15"
 commands:
   gsg-arena:
     description: gsg arena command

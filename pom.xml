@@ -58,6 +58,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>temp.soon.delete</groupId>
+            <artifactId>corpse-reborn</artifactId>
+            <version>2.14.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.ericlam.mc</groupId>
             <artifactId>customcsweapons</artifactId>
             <version>1.5.10</version>
