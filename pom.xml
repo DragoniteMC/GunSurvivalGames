@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
             <groupId>com.hypernite.mc</groupId>
-            <artifactId>Minigames-API</artifactId>
+            <artifactId>minigame-api</artifactId>
             <version>0.1.6</version>
             <scope>provided</scope>
         </dependency>
