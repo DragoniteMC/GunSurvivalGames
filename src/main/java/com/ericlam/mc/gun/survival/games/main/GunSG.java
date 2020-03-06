@@ -107,7 +107,7 @@ public class GunSG extends JavaPlugin implements Listener {
         compulsory.registerLobbyTask(new CountdownTask());
         compulsory.registerEndTask(new PreEndTask());
         Voluntary voluntary = MinigamesCore.getRegistration().getVoluntary();
-        voluntary.addSpectatorITem(1, wantedManager.getWantedItem());
+        voluntary.addSpectatorItem(1, wantedManager.getWantedItem());
         voluntary.registerGameTask(new InGameState("preStart", motd.preStart), new PreStartTask());
         voluntary.registerGameTask(peaceState, new PeaceTask());
         voluntary.registerGameTask(new InGameState("starting", motd.starting), new InGameTask());
