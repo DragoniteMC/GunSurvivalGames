@@ -19,11 +19,11 @@ import java.util.List;
 public class ChestsManager {
     private final ChestConfig config;
     private final GSGConfig gsgConfig;
-    private List<ItemStack> tie1Items = new ArrayList<>();
-    private List<ItemStack> tie2Items = new ArrayList<>();
-    private CSUtility csUtility;
+    private final List<ItemStack> tie1Items = new ArrayList<>();
+    private final List<ItemStack> tie2Items = new ArrayList<>();
+    private final CSUtility csUtility;
 
-    private HashMap<Location, Inventory> chestCachedItems = new HashMap<>();
+    private final HashMap<Location, Inventory> chestCachedItems = new HashMap<>();
 
     public ChestsManager(ChestConfig config, GSGConfig gsgConfig) {
         this.config = config;

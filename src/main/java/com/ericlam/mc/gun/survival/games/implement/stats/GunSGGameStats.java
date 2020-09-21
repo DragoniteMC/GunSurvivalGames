@@ -8,16 +8,18 @@ public class GunSGGameStats implements GameStatsEditor {
     private int deaths;
     private int played;
     private int wins;
+    private double scores;
 
-    public GunSGGameStats(int kills, int deaths, int played, int wins) {
+    public GunSGGameStats(int kills, int deaths, int played, int wins, double scores) {
         this.kills = kills;
         this.deaths = deaths;
         this.played = played;
         this.wins = wins;
+        this.scores = scores;
     }
 
     public GunSGGameStats() {
-        this(0, 0, 0, 0);
+        this(0, 0, 0, 0, 0);
     }
 
     @Override
@@ -62,7 +64,12 @@ public class GunSGGameStats implements GameStatsEditor {
 
     @Override
     public double getScores() {
-        return kills * 3 - deaths * 2 + wins * 5;
+        return scores;
+    }
+
+    @Override
+    public void setScores(double v) {
+        this.scores = v;
     }
 
     @Override
@@ -72,7 +79,7 @@ public class GunSGGameStats implements GameStatsEditor {
                 "&d勝數: &f".concat(wins + ""),
                 "&d死亡: &f".concat(deaths + ""),
                 "&d遊玩: &f".concat(played + ""),
-                "&a分數: &f".concat(getScores() + "")
+                "&a分數: &f".concat(scores + "")
         };
     }
 }

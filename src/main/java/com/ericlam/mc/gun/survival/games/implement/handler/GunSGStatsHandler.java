@@ -38,7 +38,7 @@ public class GunSGStatsHandler implements GameStatsHandler {
     @Override
     public GameStatsEditor loadGameStatsData(@Nonnull Player player) {
         try (Connection connection = sqlDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT `kills`, `wins`, `deaths`, `played` FROM `GunSG_stats` WHERE `uuid`=? OR `name`=?")) {
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM `GunSG_stats` WHERE `uuid`=? OR `name`=?")) {
             statement.setString(1, player.getUniqueId().toString());
             statement.setString(2, player.getName());
             ResultSet set = statement.executeQuery();
@@ -47,7 +47,8 @@ public class GunSGStatsHandler implements GameStatsHandler {
                 int deaths = set.getInt("deaths");
                 int wins = set.getInt("wins");
                 int played = set.getInt("played");
-                return new GunSGGameStats(kills, deaths, played, wins);
+                double score = set.getDouble("scores");
+                return new GunSGGameStats(kills, deaths, played, wins, score);
             }
         } catch (SQLException e) {
             e.printStackTrace();

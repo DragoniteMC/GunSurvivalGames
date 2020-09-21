@@ -94,8 +94,8 @@ public class GunSG extends JavaPlugin implements Listener {
         MotdConfig motd = yamlManager.getConfigAs(MotdConfig.class);
         peaceState = new InGameState("peace", motd.peace);
         preDMState = new InGameState("preDeathmatch", motd.preDeathMatch);
-        customEnabled = getServer().getPluginManager().getPlugin("CustomCSWeapon") != null;
-        corpseEnabled = getServer().getPluginManager().getPlugin("CorpseReborn") != null;
+        customEnabled = getServer().getPluginManager().isPluginEnabled("CustomCSWeapon");
+        corpseEnabled = getServer().getPluginManager().isPluginEnabled("PlayerCorpse");
         this.getServer().getPluginManager().registerEvents(this, this);
         Compulsory compulsory = MinigamesCore.getRegistration().getCompulsory();
         compulsory.registerGamePlayerHandler(new GunSGPlayerHandler());

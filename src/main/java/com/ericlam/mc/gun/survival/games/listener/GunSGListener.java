@@ -29,7 +29,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.golde.bukkit.corpsereborn.CorpseAPI.CorpseAPI;
+import xuan.cat.playercorpse.code.Index;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -38,8 +38,8 @@ import java.util.Locale;
 
 public class GunSGListener implements Listener {
 
-    private YamlManager yamlManager;
-    private LangConfig msg;
+    private final YamlManager yamlManager;
+    private final LangConfig msg;
 
     public GunSGListener(YamlManager yamlManager) {
         this.yamlManager = yamlManager;
@@ -70,7 +70,7 @@ public class GunSGListener implements Listener {
         PlayerInventory inventory = player.getInventory();
         if (GunSG.corpseEnabled) {
             //not support 1.15.2
-            CorpseAPI.spawnCorpse(player, player.getLocation(), inventory.getContents(), inventory.getHelmet(), inventory.getChestplate(), inventory.getLeggings(), inventory.getBoots(), inventory.getItemInMainHand());
+            Index.getCorpseServer().spawnCorpse(player, inventory);
         } else {
             final World world = player.getWorld();
             ItemStack[] items = inventory.getStorageContents();

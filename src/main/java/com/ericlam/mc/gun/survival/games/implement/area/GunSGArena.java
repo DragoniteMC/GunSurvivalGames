@@ -17,7 +17,7 @@ public class GunSGArena implements CreateArena {
     private Map<String, List<Location>> warpMap;
     private boolean changed;
     private World world;
-    private List<String> description;
+    private final List<String> description;
 
     public GunSGArena(String author, String arenaName, String displayName, Map<String, List<Location>> warpMap, World world, List<String> description) {
         this.author = author;

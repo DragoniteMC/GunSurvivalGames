@@ -101,7 +101,7 @@ public class WantedManager {
         int row = (int) Math.ceil((double) doubleList.size() / 9);
         InventoryBuilder builder = new InventoryBuilder(row == 0 ? 1 : row, "&c懸賞 ".concat(player.getDisplayName()).concat(" 的價目"));
         for (double dou : doubleList) {
-            ItemStack item = new ItemStackBuilder(Material.GOLD_NUGGET).displayName(ChatColor.GOLD + "" + dou + " Gems").lore("&7點擊以懸賞")
+            new ItemStackBuilder(Material.GOLD_NUGGET).displayName(ChatColor.GOLD + "" + dou + " Gems").lore("&7點擊以懸賞")
                     .onClick(e -> {
                         e.setCancelled(true);
                         Player clicker = (Player) e.getWhoClicked();
@@ -123,8 +123,7 @@ public class WantedManager {
                                 .replace("<player>", clicker.getDisplayName())
                                 .replace("<target>", player.getDisplayName()).replace("<money>", dou + "")
                                 .replace("<bounty>", round(bounty)));
-                    }).build();
-            builder.item(item);
+                    }).buildWithSkin(builder::item);
         }
         return builder.build();
     }
