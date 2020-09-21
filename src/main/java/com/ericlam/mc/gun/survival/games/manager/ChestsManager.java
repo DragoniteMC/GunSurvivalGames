@@ -5,6 +5,7 @@ import com.ericlam.mc.gun.survival.games.config.GSGConfig;
 import com.hypernite.mc.hnmc.core.builders.InventoryBuilder;
 import com.hypernite.mc.hnmc.core.utils.Tools;
 import com.shampaggon.crackshot.CSUtility;
+import me.DeeCaaD.CrackShotPlus.API;
 import me.DeeCaaD.CrackShotPlus.CSPapi;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -28,7 +29,7 @@ public class ChestsManager {
     public ChestsManager(ChestConfig config, GSGConfig gsgConfig) {
         this.config = config;
         this.gsgConfig = gsgConfig;
-        this.csUtility = new CSUtility();
+        this.csUtility = API.getCSUtility();
     }
 
     public void loadTie1Items() {
