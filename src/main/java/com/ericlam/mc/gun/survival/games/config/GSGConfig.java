@@ -40,10 +40,6 @@ public class GSGConfig extends Configuration {
 
     public int compassMaxTrack;
 
-    public double rewardKills;
-
-    public double rewardWins;
-
     public String countDownSound;
 
 

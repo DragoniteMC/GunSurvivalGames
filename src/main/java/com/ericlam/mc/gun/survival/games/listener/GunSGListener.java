@@ -1,6 +1,5 @@
 package com.ericlam.mc.gun.survival.games.listener;
 
-import com.ericlam.mc.gun.survival.games.config.GSGConfig;
 import com.ericlam.mc.gun.survival.games.config.LangConfig;
 import com.ericlam.mc.gun.survival.games.main.GunSG;
 import com.ericlam.mc.minigames.core.character.GamePlayer;
@@ -10,11 +9,8 @@ import com.ericlam.mc.minigames.core.event.player.GamePlayerJoinEvent;
 import com.ericlam.mc.minigames.core.event.player.GamePlayerQuitEvent;
 import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
-import com.hypernite.mc.hnmc.core.main.HyperNiteMC;
 import com.hypernite.mc.hnmc.core.managers.YamlManager;
 import com.shampaggon.crackshot.CSDirector;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -31,9 +27,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import xuan.cat.playercorpse.code.Index;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.Locale;
 
 public class GunSGListener implements Listener {
@@ -44,13 +37,6 @@ public class GunSGListener implements Listener {
     public GunSGListener(YamlManager yamlManager) {
         this.yamlManager = yamlManager;
         msg = yamlManager.getConfigAs(LangConfig.class);
-    }
-
-    public static void reward(Player player, double money) {
-        Economy economy = HyperNiteMC.getAPI().getVaultAPI().getEconomy();
-        if (economy.depositPlayer(player, money).type == EconomyResponse.ResponseType.SUCCESS && player.isOnline()) {
-            player.sendMessage(GunSG.getYamlManager().getConfigAs(LangConfig.class).get("money-reward").replace("<money>", new BigDecimal(money).round(new MathContext(2, RoundingMode.HALF_DOWN)).toPlainString()));
-        }
     }
 
     @EventHandler
@@ -138,8 +124,6 @@ public class GunSGListener implements Listener {
                     .replace("<victim>", player.getDisplayName())
                     .replace("<action>", e.getAction()));
         }
-        double reward = yamlManager.getConfigAs(GSGConfig.class).rewardKills;
-        reward(killer, reward);
         GunSG.getPlugin(GunSG.class).getWantedManager().onBountyKill(killer, player);
     }
 

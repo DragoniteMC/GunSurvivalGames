@@ -5,12 +5,11 @@ import com.ericlam.mc.gun.survival.games.config.LangConfig;
 import com.ericlam.mc.minigames.core.character.GamePlayer;
 import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
+import com.ericlam.mc.multiconomy.UpdateResult;
+import com.ericlam.mc.multiconomy.api.CurrencyController;
 import com.hypernite.mc.hnmc.core.builders.InventoryBuilder;
 import com.hypernite.mc.hnmc.core.builders.ItemStackBuilder;
-import com.hypernite.mc.hnmc.core.main.HyperNiteMC;
 import com.hypernite.mc.hnmc.core.managers.YamlManager;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -32,14 +31,14 @@ public class WantedManager {
 
     private final Map<GamePlayer, ItemStack> itemStackMap = new HashMap<>();
     private final Map<Player, Map<Player, Double>> spentList = new HashMap<>();
-    private final Economy economy;
+    private final CurrencyController economy;
     private ItemStack wantedItem;
     private Inventory inventory;
-    private Map<Player, Inventory> rewardInventory = new HashMap<>();
+    private final Map<Player, Inventory> rewardInventory = new HashMap<>();
     private final GSGConfig.WantedItem wantedOption;
     private final LangConfig msg;
 
-    public WantedManager(Economy economy, YamlManager yamlManager) {
+    public WantedManager(CurrencyController economy, YamlManager yamlManager) {
         this.economy = economy;
         this.msg = yamlManager.getConfigAs(LangConfig.class);
         this.wantedOption = yamlManager.getConfigAs(GSGConfig.class).wantedItem;
@@ -110,8 +109,7 @@ public class WantedManager {
                             return;
                         }
                         String msg = this.msg.get("no-gems");
-                        Economy economy = HyperNiteMC.getAPI().getVaultAPI().getEconomy();
-                        if (economy.withdrawPlayer(clicker, dou).type != EconomyResponse.ResponseType.SUCCESS) {
+                        if (economy.withdrawPlayer(clicker, dou, "console") != UpdateResult.SUCCESS) {
                             clicker.sendMessage(msg);
                             return;
                         }
@@ -135,7 +133,7 @@ public class WantedManager {
     public void onBountyKill(Player killer, Player victim) {
         if (this.spentList.values().stream().noneMatch(map -> map.containsKey(victim))) return;
         double bounty = this.spentList.values().stream().filter(map -> map.containsKey(victim)).mapToDouble(map -> map.get(victim)).sum();
-        economy.depositPlayer(killer, bounty);
+        economy.depositPlayer(killer, bounty, "console");
         String msg = this.msg.get("bounty-get").replace("<player>", killer.getDisplayName()).replace("<target>", victim.getDisplayName()).replace("<money>", round(bounty));
         Bukkit.broadcastMessage(msg);
     }
@@ -146,7 +144,7 @@ public class WantedManager {
         Map<Player, Map<Player, Double>> returnList = this.spentList.entrySet().stream().filter(map -> map.getValue().containsKey(victim)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         returnList.forEach((k, v) -> {
             double returnMoney = v.get(victim);
-            economy.depositPlayer(k, returnMoney);
+            economy.depositPlayer(k, returnMoney, "console");
             k.sendMessage(msg.get("bounty-fail").replace("<money>", round(returnMoney)));
             v.remove(victim);
         });
@@ -156,7 +154,7 @@ public class WantedManager {
     public void onBountyWin(Player victim) {
         if (this.spentList.values().stream().noneMatch(map -> map.containsKey(victim))) return;
         double bounty = this.spentList.values().stream().filter(map -> map.containsKey(victim)).mapToDouble(map -> map.get(victim)).sum();
-        economy.depositPlayer(victim, bounty);
+        economy.depositPlayer(victim, bounty, "console");
         Bukkit.broadcastMessage(msg.get("bounty-win").replace("<player>", victim.getDisplayName()).replace("<money>", round(bounty)));
         this.spentList.forEach((k, v) -> v.remove(victim));
     }

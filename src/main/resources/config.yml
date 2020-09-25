@@ -14,8 +14,6 @@ preDeathMatchTime: 20
 deathMatchTime: 300
 fallbackServer: gsglobby
 compassMaxTrack: 20
-rewardKills: 20
-rewardWins: 50
 countDownSound: BLOCK_NOTE_BLOCK_SNARE:1:1
 activeSound: BLOCK_NOTE_BLOCK_PLING:1:1
 
