@@ -9,7 +9,7 @@ import com.ericlam.mc.minigames.core.event.player.GamePlayerJoinEvent;
 import com.ericlam.mc.minigames.core.event.player.GamePlayerQuitEvent;
 import com.ericlam.mc.minigames.core.game.GameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
-import com.hypernite.mc.hnmc.core.managers.YamlManager;
+import com.dragonite.mc.dnmc.core.managers.YamlManager;
 import com.shampaggon.crackshot.CSDirector;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -25,7 +25,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import xuan.cat.playercorpse.code.Index;
 
 import java.util.Locale;
 
@@ -56,7 +55,7 @@ public class GunSGListener implements Listener {
         PlayerInventory inventory = player.getInventory();
         if (GunSG.corpseEnabled) {
             //not support 1.15.2
-            Index.getCorpseServer().spawnCorpse(player, inventory);
+            //Index.getCorpseServer().spawnCorpse(player, inventory);
         } else {
             final World world = player.getWorld();
             ItemStack[] items = inventory.getStorageContents();

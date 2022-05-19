@@ -25,10 +25,10 @@ import com.ericlam.mc.minigames.core.game.InGameState;
 import com.ericlam.mc.minigames.core.main.MinigamesCore;
 import com.ericlam.mc.minigames.core.registable.Compulsory;
 import com.ericlam.mc.minigames.core.registable.Voluntary;
-import com.ericlam.mc.multiconomy.MultiConomy;
-import com.hypernite.mc.hnmc.core.builders.InventoryBuilder;
-import com.hypernite.mc.hnmc.core.main.HyperNiteMC;
-import com.hypernite.mc.hnmc.core.managers.YamlManager;
+import com.ericlam.mc.eld.ELDependenci;
+import com.dragonite.mc.dnmc.core.builders.InventoryBuilder;
+import com.dragonite.mc.dnmc.core.main.DragoniteMC;
+import com.dragonite.mc.dnmc.core.managers.YamlManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -36,6 +36,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.dragonitemc.dragoneconomy.api.EconomyService;
 
 public class GunSG extends JavaPlugin implements Listener {
 
@@ -80,7 +81,7 @@ public class GunSG extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        yamlManager = HyperNiteMC.getAPI().getFactory().getConfigFactory(this)
+        yamlManager = DragoniteMC.getAPI().getFactory().getConfigFactory(this)
                 .register("config.yml", GSGConfig.class)
                 .register("chests.yml", ChestConfig.class)
                 .register("lang.yml", LangConfig.class)
@@ -88,7 +89,7 @@ public class GunSG extends JavaPlugin implements Listener {
                 .dump();
         final GSGConfig gsgConfig = yamlManager.getConfigAs(GSGConfig.class);
         chestsManager = new ChestsManager(yamlManager.getConfigAs(ChestConfig.class), gsgConfig);
-        wantedManager = new WantedManager(MultiConomy.getAPI().getCurrency("gems"), yamlManager);
+        wantedManager = new WantedManager(ELDependenci.getApi().exposeService(EconomyService.class), yamlManager);
         wantedManager.loadWantedItem();
         MotdConfig motd = yamlManager.getConfigAs(MotdConfig.class);
         peaceState = new InGameState("peace", motd.peace);

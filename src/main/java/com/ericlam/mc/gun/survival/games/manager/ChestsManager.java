@@ -2,8 +2,8 @@ package com.ericlam.mc.gun.survival.games.manager;
 
 import com.ericlam.mc.gun.survival.games.config.ChestConfig;
 import com.ericlam.mc.gun.survival.games.config.GSGConfig;
-import com.hypernite.mc.hnmc.core.builders.InventoryBuilder;
-import com.hypernite.mc.hnmc.core.utils.Tools;
+import com.dragonite.mc.dnmc.core.builders.InventoryBuilder;
+import com.dragonite.mc.dnmc.core.utils.Tools;
 import com.shampaggon.crackshot.CSUtility;
 import me.DeeCaaD.CrackShotPlus.API;
 import me.DeeCaaD.CrackShotPlus.CSPapi;

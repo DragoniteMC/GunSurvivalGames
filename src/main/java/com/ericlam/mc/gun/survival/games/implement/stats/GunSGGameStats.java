@@ -1,5 +1,6 @@
 package com.ericlam.mc.gun.survival.games.implement.stats;
 
+import com.ericlam.mc.minigames.core.gamestats.GameStats;
 import com.ericlam.mc.minigames.core.gamestats.GameStatsEditor;
 
 public class GunSGGameStats implements GameStatsEditor {
@@ -81,5 +82,27 @@ public class GunSGGameStats implements GameStatsEditor {
                 "&d遊玩: &f".concat(played + ""),
                 "&a分數: &f".concat(scores + "")
         };
+    }
+
+    @Override
+    public GameStats clone() {
+        try {
+            return (GameStats) super.clone();
+        } catch (CloneNotSupportedException e) {
+            System.out.printf("Clone not supported: %s", e.getMessage());
+            return new GunSGGameStats(kills, deaths, played, wins, scores);
+        }
+    }
+
+    @Override
+    public GameStats minus(GameStats d) {
+        var gameStats = d.castTo(GunSGGameStats.class);
+        var log = (GunSGGameStats) this.clone();
+        log.setDeaths(this.getDeaths() - gameStats.getDeaths());
+        log.setKills(this.getKills() - gameStats.getKills());
+        log.setPlayed(this.getPlayed() - gameStats.getPlayed());
+        log.setWins(this.getWins() - gameStats.getWins());
+        log.setScores(this.getScores() - gameStats.getScores());
+        return log;
     }
 }

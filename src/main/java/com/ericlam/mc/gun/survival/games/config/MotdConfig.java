@@ -1,7 +1,7 @@
 package com.ericlam.mc.gun.survival.games.config;
 
-import com.hypernite.mc.hnmc.core.config.yaml.MessageConfiguration;
-import com.hypernite.mc.hnmc.core.config.yaml.Resource;
+import com.dragonite.mc.dnmc.core.config.yaml.MessageConfiguration;
+import com.dragonite.mc.dnmc.core.config.yaml.Resource;
 
 @Resource(locate = "motd.yml")
 public class MotdConfig extends MessageConfiguration {

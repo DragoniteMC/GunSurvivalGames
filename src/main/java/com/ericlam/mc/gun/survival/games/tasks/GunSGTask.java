@@ -6,7 +6,7 @@ import com.ericlam.mc.gun.survival.games.config.MotdConfig;
 import com.ericlam.mc.gun.survival.games.main.GunSG;
 import com.ericlam.mc.minigames.core.SectionTask;
 import com.ericlam.mc.minigames.core.manager.PlayerManager;
-import com.hypernite.mc.hnmc.core.managers.YamlManager;
+import com.dragonite.mc.dnmc.core.managers.YamlManager;
 
 public abstract class GunSGTask implements SectionTask {
     YamlManager configManager;

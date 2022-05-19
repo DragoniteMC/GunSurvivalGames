@@ -4,16 +4,14 @@ import com.ericlam.mc.gun.survival.games.implement.stats.GunSGGameStats;
 import com.ericlam.mc.minigames.core.gamestats.GameStats;
 import com.ericlam.mc.minigames.core.gamestats.GameStatsEditor;
 import com.ericlam.mc.minigames.core.gamestats.GameStatsHandler;
-import com.hypernite.mc.hnmc.core.main.HyperNiteMC;
-import com.hypernite.mc.hnmc.core.managers.SQLDataSource;
+import com.dragonite.mc.dnmc.core.main.DragoniteMC;
+import com.dragonite.mc.dnmc.core.managers.SQLDataSource;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -21,13 +19,47 @@ public class GunSGStatsHandler implements GameStatsHandler {
 
     private final SQLDataSource sqlDataSource;
 
+    private static final String createTableStatement =
+            """
+                    CREATE TABLE IF NOT EXISTS `GunSG_stats` 
+                    (`uuid` VARCHAR(40) PRIMARY KEY NOT NULL, 
+                    `name`TINYTEXT NOT NULL , 
+                    `kills` MEDIUMINT DEFAULT 0, 
+                    `deaths` MEDIUMINT DEFAULT 0, 
+                    `wins` MEDIUMINT DEFAULT  0, 
+                    `played` MEDIUMINT DEFAULT 0, 
+                     `scores` DOUBLE DEFAULT 0)
+                    """;
+    private static final String selectStatement = "SELECT * FROM `GunSG_stats` WHERE `uuid`=? OR `name`=?";
+    private static final String saveStatement = """
+            INSERT INTO `GunSG_stats` VALUES (?,?,?,?,?,?,?) 
+            ON DUPLICATE KEY UPDATE `name`=?, `kills`=?, `deaths`=?, `wins`=?, `played`=?, `scores`=?
+            """;
+    private static final String createRecordStatement = """
+                CREATE TABLE IF NOT EXISTS `GunSG_Log` 
+                (`id` int primary key auto_increment, 
+                `uuid` VARCHAR(40) NOT NULL, 
+                `time` LONG NOT NULL, 
+                `kills` MEDIUMINT DEFAULT 0, 
+                `deaths` MEDIUMINT DEFAULT 0, 
+                `wins` MEDIUMINT DEFAULT  0, 
+                `scores` DOUBLE DEFAULT 0)
+            """;
+    private static final String saveRecordStatement = """
+            INSERT INTO `GunSG_Log` VALUES (NULL,?,?,?,?,?,?)
+            """;
+
+
+
+
     public GunSGStatsHandler() {
-        this.sqlDataSource = HyperNiteMC.getAPI().getSQLDataSource();
+        this.sqlDataSource = DragoniteMC.getAPI().getSQLDataSource();
         CompletableFuture.runAsync(() -> {
             try (Connection connection = sqlDataSource.getConnection();
-                 PreparedStatement statement =
-                         connection.prepareStatement("CREATE TABLE IF NOT EXISTS `GunSG_stats` (`uuid` VARCHAR(40) NOT NULL  PRIMARY KEY, `name` TINYTEXT NOT NULL , `kills` MEDIUMINT DEFAULT 0, `deaths` MEDIUMINT DEFAULT 0, `wins` MEDIUMINT DEFAULT 0, `played` MEDIUMINT DEFAULT 0, `scores` DOUBLE DEFAULT 0)")) {
-                statement.execute();
+                 PreparedStatement createTable = connection.prepareStatement(createTableStatement);
+                 PreparedStatement createLogTable = connection.prepareStatement(createRecordStatement)) {
+                createTable.execute();
+                createLogTable.execute();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -38,7 +70,7 @@ public class GunSGStatsHandler implements GameStatsHandler {
     @Override
     public GameStatsEditor loadGameStatsData(@Nonnull Player player) {
         try (Connection connection = sqlDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM `GunSG_stats` WHERE `uuid`=? OR `name`=?")) {
+             PreparedStatement statement = connection.prepareStatement(selectStatement)) {
             statement.setString(1, player.getUniqueId().toString());
             statement.setString(2, player.getName());
             ResultSet set = statement.executeQuery();
@@ -60,9 +92,8 @@ public class GunSGStatsHandler implements GameStatsHandler {
     public CompletableFuture<Void> saveGameStatsData(OfflinePlayer offlinePlayer, GameStats gameStats) {
         return CompletableFuture.runAsync(() -> {
             try (Connection connection = sqlDataSource.getConnection();
-                 PreparedStatement statement = connection.prepareStatement(
-                         "INSERT INTO `GunSG_stats` VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `name`=?, `kills`=?, `deaths`=?, `wins`=?, `played`=?, `scores`=? ")) {
-                setStatement(offlinePlayer, gameStats, statement);
+                 PreparedStatement statement = connection.prepareStatement(saveStatement)) {
+                saveStatsStatement(offlinePlayer, gameStats, statement);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -74,9 +105,8 @@ public class GunSGStatsHandler implements GameStatsHandler {
         return CompletableFuture.runAsync(() -> {
             try (Connection connection = sqlDataSource.getConnection()) {
                 map.forEach((offlinePlayer, gameStats) -> {
-                    try (PreparedStatement statement = connection.prepareStatement(
-                            "INSERT INTO `GunSG_stats` VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `name`=?, `kills`=?, `deaths`=?, `wins`=?, `played`=?, `scores`=? ")) {
-                        setStatement(offlinePlayer, gameStats, statement);
+                    try (PreparedStatement statement = connection.prepareStatement(saveStatement)) {
+                        saveStatsStatement(offlinePlayer, gameStats, statement);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -87,7 +117,45 @@ public class GunSGStatsHandler implements GameStatsHandler {
         });
     }
 
-    private void setStatement(OfflinePlayer offlinePlayer, GameStats gameStats, PreparedStatement statement) throws SQLException {
+    @Override
+    public CompletableFuture<Void> saveGameStatsRecord(OfflinePlayer offlinePlayer, GameStats gameStats, Timestamp timestamp) {
+        return CompletableFuture.runAsync(() -> {
+            try (Connection connection = sqlDataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(saveRecordStatement)) {
+                var gsgStats = gameStats.castTo(GunSGGameStats.class);
+                saveRecordStatement(statement, offlinePlayer, gsgStats, timestamp);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public CompletableFuture<Void> saveGameStatsRecord(Map<OfflinePlayer, GameStats> map, Map<OfflinePlayer, Timestamp> map1) {
+        return CompletableFuture.runAsync(() -> {
+            try (Connection connection = sqlDataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(saveRecordStatement)) {
+                for (Map.Entry<OfflinePlayer, GameStats> entry : map.entrySet()) {
+                    var player = entry.getKey();
+                    var gsgStats = entry.getValue().castTo(GunSGGameStats.class);
+                    var ts = map1.getOrDefault(player, Timestamp.from(Instant.now()));
+                    saveRecordStatement(statement, player, gsgStats, ts);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void saveRecordStatement(PreparedStatement statement, OfflinePlayer player, GunSGGameStats gugStats, Timestamp ts) throws SQLException {
+        statement.setString(1, player.getUniqueId().toString());
+        statement.setLong(2, ts.getTime());
+        statement.setInt(3, gugStats.getKills());
+        statement.setInt(4, gugStats.getDeaths());
+        statement.setInt(5, gugStats.getWins());
+        statement.setDouble(6, gugStats.getScores());
+        statement.executeUpdate();
+    }
+
+    private void saveStatsStatement(OfflinePlayer offlinePlayer, GameStats gameStats, PreparedStatement statement) throws SQLException {
         statement.setString(1, offlinePlayer.getUniqueId().toString());
         statement.setString(2, offlinePlayer.getName());
         statement.setInt(3, gameStats.getKills());
