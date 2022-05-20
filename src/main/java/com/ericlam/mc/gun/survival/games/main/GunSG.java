@@ -36,6 +36,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.dragonitemc.dragoneconomy.api.AsyncEconomyService;
 import org.dragonitemc.dragoneconomy.api.EconomyService;
 
 public class GunSG extends JavaPlugin implements Listener {
@@ -127,7 +128,7 @@ public class GunSG extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onGameActivated(GameVotingEvent e) {
-        this.getServer().getPluginManager().registerEvents(new GunSGListener(yamlManager), this);
+        this.getServer().getPluginManager().registerEvents(new GunSGListener(ELDependenci.getApi().exposeService(AsyncEconomyService.class), yamlManager), this);
     }
 
     @EventHandler

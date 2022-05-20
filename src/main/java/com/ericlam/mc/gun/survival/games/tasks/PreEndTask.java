@@ -38,6 +38,10 @@ public class PreEndTask extends GunSGTask {
         if (survivor != null) {
             if (survivor.isOnline()) survivor.sendTitle(msg.getPure("win-title"), "", 20, 100, 20);
             GunSG.getPlugin(GunSG.class).getWantedManager().onBountyWin(survivor);
+            double reward = gsgConfig.rewards.winGame;
+            economyService.depositPlayer(survivor.getUniqueId(), reward).thenRunSync(
+                    updateResult -> survivor.sendMessage("§6+" + reward + " $WRLD (獲得勝利)")
+            ).join();
         }
         Bukkit.broadcastMessage(msg.get("game-end").replace("<arena>", arena.getDisplayName()).replace("<player>", (survivor == null ? "無" : survivor.getDisplayName())));
 

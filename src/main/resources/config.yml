@@ -17,6 +17,10 @@ compassMaxTrack: 20
 countDownSound: BLOCK_NOTE_BLOCK_SNARE:1:1
 activeSound: BLOCK_NOTE_BLOCK_PLING:1:1
 
+rewards:
+  killOther: 0.01
+  winGame: 0.1
+
 wantedItem:
   material: ROSE_BUSH
   name: "&c懸賞"

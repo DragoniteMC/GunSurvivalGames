@@ -2,7 +2,7 @@ name: GunSurvivalGames
 main: com.ericlam.mc.gun.survival.games.main.GunSG
 version: ${project.version}
 author: Hydranapse_
-depend: [ Minigames-Core, MultiConomy, CrackShotPlus ]
+depend: [ Minigames-Core, DragonEconomy, CrackShotPlus ]
 softdepend: [ CustomCSWeapon, PlayerCorpse ]
 api-version: "1.16"
 commands:

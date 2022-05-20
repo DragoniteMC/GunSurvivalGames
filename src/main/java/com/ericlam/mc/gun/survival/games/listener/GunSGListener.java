@@ -1,5 +1,6 @@
 package com.ericlam.mc.gun.survival.games.listener;
 
+import com.ericlam.mc.gun.survival.games.config.GSGConfig;
 import com.ericlam.mc.gun.survival.games.config.LangConfig;
 import com.ericlam.mc.gun.survival.games.main.GunSG;
 import com.ericlam.mc.minigames.core.character.GamePlayer;
@@ -25,16 +26,21 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.dragonitemc.dragoneconomy.api.AsyncEconomyService;
 
 import java.util.Locale;
 
 public class GunSGListener implements Listener {
 
     private final YamlManager yamlManager;
+    private final AsyncEconomyService economy;
+    private final GSGConfig config;
     private final LangConfig msg;
 
-    public GunSGListener(YamlManager yamlManager) {
+    public GunSGListener(AsyncEconomyService economy, YamlManager yamlManager) {
+        this.economy = economy;
         this.yamlManager = yamlManager;
+        config = yamlManager.getConfigAs(GSGConfig.class);
         msg = yamlManager.getConfigAs(LangConfig.class);
     }
 
@@ -123,6 +129,10 @@ public class GunSGListener implements Listener {
                     .replace("<victim>", player.getDisplayName())
                     .replace("<action>", e.getAction()));
         }
+        double reward = config.rewards.killOther;
+        economy.depositPlayer(killer.getUniqueId(), reward).thenRunSync(
+            updateResult -> killer.sendMessage("§6+" + reward + " $WRLD (成功存活)")
+        ).join();
         GunSG.getPlugin(GunSG.class).getWantedManager().onBountyKill(killer, player);
     }
 

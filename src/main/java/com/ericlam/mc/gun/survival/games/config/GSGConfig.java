@@ -45,7 +45,14 @@ public class GSGConfig extends Configuration {
 
     public String activeSound;
 
+    public Rewards rewards;
+
     public WantedItem wantedItem;
+
+    public static class Rewards {
+        public double killOther;
+        public double winGame;
+    }
 
     public static class WantedItem {
         public Material material;
